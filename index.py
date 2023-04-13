@@ -12,8 +12,10 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 import requests
+from db import init_db_command
+from user import User
 import json
-
+import sqlite3
 
 
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', None)
@@ -31,37 +33,49 @@ app.config['TEMPLATES_AUTO_RELOAD'] = True
 # to allow Http traffic for local dev
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
-unique_id=''
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return user_id
+
+
+@login_manager.unauthorized_handler
+def unauthorized():
+    init_db_command()
+
+    return "You must be logged in to access this content.", 403
+
+
+
+try:
+    init_db_command()
+except sqlite3.OperationalError:
+    # Assume it's already been created
+    pass
+client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
 
 
-@login_manager.unauthorized_handler
-def unauthorized():
-    return "You must be logged in to access this content.", 403
-
-
 @app.route('/', methods=['GET', 'POST'])
 def home():
+    if current_user.is_authenticated:
 
-    
-
-
-    if unique_id is not None:
         return render_template('home.html', name="logeado")
     else:
         return render_template('home.html', name='Guest')
-    
+
+
 @app.route('/logout')
 def logout():
     logout_user()
-    unique_id=''
     return redirect(url_for('home'))
 
 
@@ -102,7 +116,6 @@ def callback():
         auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
     )
 
-
     client.parse_request_body_response(json.dumps(token_response.json()))
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
     uri, headers, body = client.add_token(userinfo_endpoint)
@@ -116,14 +129,22 @@ def callback():
         users_email = user_info['email']
         picture = user_info['picture']
         users_name = user_info['given_name']
+
     else:
         return "User email not available or not verified by Google.", 400
-    
+
+    user = User(
+        id_=unique_id, name=users_name, email=users_email, profile_pic=picture
+    )
+
+
+    if not User.get(unique_id):
+        User.create(unique_id, users_name, users_email, picture)
+
+    login_user(user)
+
 
     return redirect(url_for('home'))
-
-
-
 
 
 @app.route('/about', methods=['GET', 'POST'])
@@ -146,5 +167,4 @@ def results():
 
 
 if __name__ == '__main__':
-    app.debug = True
-    app.run()
+    app.run(debug=True)
