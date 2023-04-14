@@ -1,7 +1,8 @@
 import os
 from firebaseConf import *
 
-from flask import Flask, render_template, session, abort, redirect, request, url_for
+from flask import Flask, render_template, session, abort, redirect, request, url_for, send_file
+
 from flask_login import (
     LoginManager,
     current_user,
@@ -67,11 +68,13 @@ def load_user(user_id):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if current_user.is_authenticated:
-
-        return render_template('home.html', name="logeado")
+        filename = 'static/FotoCarnet.jpg'
+        send_file(filename, mimetype='image/jpg')
+        return render_template('home.html', name="logeado", img=filename)
     else:
-        return render_template('home.html', name='Guest')
-
+        filename = 'static/Google_icon.png'
+        send_file(filename, mimetype='image/png')
+        return render_template('home.html', name='Guest', img=filename)
 
 @app.route('/logout')
 def logout():

@@ -25,3 +25,105 @@ footer{
 
 
 }
+
+.profilephoto{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+
+.card{
+
+  border-top: 4px solid #F8BBD0;
+  background-color: #BA68C8;
+
+}
+
+
+.dot {
+  height: 50px;
+  width: 50px;
+  background-color: #ad63b9;
+  border-radius: 50%;
+  display: inline-block;
+
+}
+
+.social-icons{
+
+  list-style: none;
+  display: inline-flex;
+      right: 16px;
+    position: relative;
+}
+
+.social-icons li{
+
+    padding: 10px;
+}
+
+.social-icons li i{
+  line-height: 50px;
+    
+    position: relative;
+    font-size: 20px;
+    color: #fff;
+}
+
+
+
+.form-text-color{
+
+  color: #df9de8!important;
+
+  
+}
+
+
+.form-control{
+
+  background-color: transparent;
+  margin-top: 10px;
+  border: 1px solid #9952a5;
+}
+
+
+.form-control:focus{
+  box-shadow: none;
+  background-color: transparent;
+  border: 1px solid #71357b;
+  
+}
+
+
+.register{
+
+  text-decoration: underline;
+
+}
+
+.btn{
+
+  background: linear-gradient(to right, #E55D87 0%, #5FC3E4 100%);
+  border: none;
+  height: 45px;
+  transition: all 3s ;
+}
+
+
+.btn:hover{
+
+  background: linear-gradient(to right, #5FC3E4 0%, #E55D87 100%);
+ 
+  
+}
+
+
+
+
+
+.btn:focus{
+
+  box-shadow: none;
+}
