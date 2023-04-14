@@ -1,7 +1,7 @@
 import os
 from firebaseConf import *
 
-from flask import Flask, render_template, session, abort, redirect, request, url_for, send_file
+from flask import Flask, render_template, session, abort, redirect, request, url_for, send_file, g
 
 from flask_login import (
     LoginManager,
@@ -17,6 +17,8 @@ from db import init_db_command
 from user import User
 import json
 import sqlite3
+from functools import wraps
+
 
 
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', None)
@@ -38,10 +40,25 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+@app.before_request
+def before_request():
+    g.user_authenticated = current_user.is_authenticated
+
 
 @login_manager.user_loader
 def load_user(user_id):
     return user_id
+
+
+def inject_user(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if current_user.is_authenticated:
+            g.current_user = current_user
+        else:
+            g.current_user = None
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @login_manager.unauthorized_handler
@@ -68,13 +85,9 @@ def load_user(user_id):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if current_user.is_authenticated:
-        filename = 'static/FotoCarnet.jpg'
-        send_file(filename, mimetype='image/jpg')
-        return render_template('home.html', name="logeado", img=filename)
+        return render_template('home.html', name="logeado")
     else:
-        filename = 'static/Google_icon.png'
-        send_file(filename, mimetype='image/png')
-        return render_template('home.html', name='Guest', img=filename)
+        return render_template('home.html', name='Guest')
 
 @app.route('/logout')
 def logout():

@@ -20,6 +20,7 @@ footer{
   text-align: center;
 }
 
+
 .card{
   transform: translate(20%,20%);
 
@@ -30,6 +31,7 @@ footer{
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  cursor: pointer;
 }
 
 
@@ -80,6 +82,15 @@ footer{
   
 }
 
+.lock_login {
+  float: left;
+  margin-right: 12px;
+  margin-top: -20px;
+  position: relative;
+  z-index: 2;
+  color: red;
+}
+
 
 .form-control{
 
@@ -105,7 +116,6 @@ footer{
 
 .btn{
 
-  background: linear-gradient(to right, #E55D87 0%, #5FC3E4 100%);
   border: none;
   height: 45px;
   transition: all 3s ;
@@ -126,4 +136,9 @@ footer{
 .btn:focus{
 
   box-shadow: none;
+}
+
+ul.dropdown-menu.menu_profile.show{
+  margin-top: 0px;
+  margin-left: -45%;
 }

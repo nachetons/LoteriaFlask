@@ -6,7 +6,6 @@
     });
     </script>
   
-  <button id="myBtn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#extraLargeModal">Extra Large modal</button>
   
     
     <!-- Modal HTML -->
@@ -14,12 +13,18 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Confirmation</h5>
+                <h5 class="modal-title">Login</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Do you want to save changes to this document before closing?</p>
-                <p class="text-secondary"><small>If you don't save, your changes will be lost.</small></p>
+                <p>Usuario</p>
+                <input type="text" class="form-control" placeholder="Usuario">
+                <p>Contraseña</p>
+                <input type="password" class="form-control" placeholder="Contraseña">
+                <i class="fa fa-lock lock_login" aria-hidden="true"></i>
+                <br>
+                <a class="nav-link text-dark h5" href="/login" target="blank"><img class='profilephoto' src='static/Google_icon.png ' alt=""></a>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

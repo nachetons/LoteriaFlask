@@ -29,8 +29,22 @@
         </ul>
         <ul class="navbar-nav ms-auto d-none d-lg-inline-flex">
           <li class="nav-item mx-2">
-            <a class="nav-link text-dark h5" href="/login" target="blank"><img class='profilephoto' src={{img}} alt=""></a>
-            {% include '/components/login.html' %}
+            {% if g.user_authenticated %}
+            <li class="nav-item dropdown">
+                <a class="nav-link text-dark h5 nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" target="blank"><img class='profilephoto' src="{{ url_for('static', filename='FotoCarnet.jpg') }}"></a>
+              </a>
+              <ul class="dropdown-menu menu_profile" aria-labelledby="navbarDropdownMenuLink">
+                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="../marcadores">Settings</a></li>
+                <li><a class="dropdown-item" href="/logout">Logout</a></li>
+              </ul>
+            </li>
+          {% else %}
+  
+          <a class="nav-link text-dark h5" target="blank" id="myBtn" data-bs-toggle="modal" data-bs-target="#extraLargeModal"><img class='profilephoto' src="{{ url_for('static', filename='profileDefault.png') }}"></a>
+
+          {% include '/components/login.html' %}  
+          {% endif %}
 
           </li>
         </ul>
