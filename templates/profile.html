@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include '/components/links.html' %}
+</head>
+<body>
+    {% include '/components/nav.html' %}
+{% block content %}
+
+    <h1>ESTAS EN PROFILE</h1>
+    <h1>Profile</h1>
+  {% if g.user_authenticated %}
+    <div class="card mb-3" style="max-width: 540px;">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          {% if g.profile_pic %}
+            <img src="{{ g.profile_pic }}" class="card-img" alt="Profile picture">
+          {% else %}
+            <p>No profile picture available</p>
+          {% endif %}
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h5 class="card-title">Arturo</h5>
+            <p class="card-text">arturo123@gmail.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% else %}
+    <p>Please log in to view your profile.</p>
+  {% endif %}
+{% endblock %}
+    
+    </body>
+</html>

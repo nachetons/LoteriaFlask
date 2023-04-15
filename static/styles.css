@@ -1,3 +1,16 @@
+.fotoAbout{
+  width: 15%;
+  height: 15%;
+  border-radius: 50%;
+
+}
+.containerFoto{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 body {
     background-color: #f5f5f5;
     font-family: Arial, sans-serif;

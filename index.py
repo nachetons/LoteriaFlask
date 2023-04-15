@@ -43,22 +43,15 @@ login_manager.init_app(app)
 @app.before_request
 def before_request():
     g.user_authenticated = current_user.is_authenticated
+    g.profile_pic = get_profile_pic_url(current_user) if current_user.is_authenticated else None
+
+
 
 
 @login_manager.user_loader
 def load_user(user_id):
     return user_id
 
-
-def inject_user(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if current_user.is_authenticated:
-            g.current_user = current_user
-        else:
-            g.current_user = None
-        return f(*args, **kwargs)
-    return decorated_function
 
 
 @login_manager.unauthorized_handler
@@ -77,6 +70,7 @@ except sqlite3.OperationalError:
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.get(user_id)
@@ -85,9 +79,17 @@ def load_user(user_id):
 @app.route('/', methods=['GET', 'POST'])
 def home():
     if current_user.is_authenticated:
-        return render_template('home.html', name="logeado")
+        profile_pic = current_user.profile_pic
+
+        return render_template('home.html', name="logeado" ,profile_pic=profile_pic)
     else:
         return render_template('home.html', name='Guest')
+
+def get_profile_pic_url(user):
+    if user.is_authenticated:
+        return user.profile_pic
+    else:
+        return None
 
 @app.route('/logout')
 def logout():
@@ -159,7 +161,6 @@ def callback():
 
     login_user(user)
 
-
     return redirect(url_for('home'))
 
 
@@ -174,12 +175,23 @@ def about():
 def marcadores():
     boletos = db.child("users").child(
         'aqgquryQOHhk20mbcy1GKDsD7932').child('boletos').get().val()
-    return render_template('hello.html', t=boletos.values())
+    return render_template('marcadores.html', t=boletos.values())
 
 
 @app.route('/results', methods=['GET', 'POST'])
 def results():
     return render_template('results.html')
+
+
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    return render_template('settings.html')
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():    
+    return render_template('profile.html', profile_pic=g.profile_pic)
+
 
 
 if __name__ == '__main__':
