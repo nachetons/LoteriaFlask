@@ -81,9 +81,20 @@ def home():
     if current_user.is_authenticated:
         profile_pic = current_user.profile_pic
 
-        return render_template('home.html', name="logeado" ,profile_pic=profile_pic)
+        return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults())
     else:
-        return render_template('home.html', name='Guest')
+        return render_template('home.html', name='Guest', resultsEuro=lastResults())
+
+def lastResults():
+    Euromillones=db.child("ultimosresultados/euromillones/resultado").get().val()
+    Bonoloto=db.child("ultimosresultados/bonoloto/resultado").get().val()
+    Primitiva=db.child("ultimosresultados/primitiva/resultado").get().val()
+    ElGordo=db.child("ultimosresultados/elgordo/resultado").get().val()
+
+    return Euromillones, Bonoloto, Primitiva, ElGordo
+
+
+
 
 def get_profile_pic_url(user):
     if user.is_authenticated:

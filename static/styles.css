@@ -143,9 +143,6 @@ footer{
 }
 
 
-
-
-
 .btn:focus{
 
   box-shadow: none;
@@ -155,3 +152,18 @@ ul.dropdown-menu.menu_profile.show{
   margin-top: 0px;
   margin-left: -45%;
 }
+
+
+
+@media (max-width: 990px) {
+/*change view menu_image to mobile size*/
+.menu_profile{
+  
+
+
+
+}
+
+
+}
+
