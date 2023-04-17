@@ -40,6 +40,7 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+
 @app.before_request
 def before_request():
     g.user_authenticated = current_user.is_authenticated
@@ -78,12 +79,14 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
+
+    nombresLoteria=["Euromillones", "Bonoloto", "Primitiva","elGordo"]
     if current_user.is_authenticated:
         profile_pic = current_user.profile_pic
 
-        return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults())
+        return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults(), nombresLoterias=nombresLoteria)
     else:
-        return render_template('home.html', name='Guest', resultsEuro=lastResults())
+        return render_template('home.html', name='Guest', resultsEuro=lastResults(), nombresLoterias=nombresLoteria)
 
 def lastResults():
     Euromillones=db.child("ultimosresultados/euromillones/resultado").get().val()
