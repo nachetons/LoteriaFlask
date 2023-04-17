@@ -31,7 +31,7 @@
           <li class="nav-item mx-2" class="menu_image"> 
             {% if g.user_authenticated %}
             <li class="nav-item dropdown">
-                <a class="nav-link text-dark h5 nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" target="blank"><img class='profilephoto' src="{{ g.profile_pic }}"></a>
+                <a class="nav-link text-dark h5 nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" target="blank"><img class='profilephoto' src="{{ url_for('static', filename='profileImage.jpg') }}"></a>
               </a>
               <ul class="dropdown-menu menu_profile" aria-labelledby="navbarDropdownMenuLink">
                 <li><a class="dropdown-item" href="../profile">Profile</a></li>

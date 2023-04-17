@@ -1,7 +1,19 @@
 import os
+import random
+
 from firebaseConf import *
 
-from flask import Flask, render_template, session, abort, redirect, request, url_for, send_file, g
+from flask import (
+    Flask, 
+    render_template, 
+    session, 
+    abort, 
+    redirect, 
+    request, 
+    url_for, 
+    send_file, 
+    g, 
+    send_from_directory)
 
 from flask_login import (
     LoginManager,
@@ -13,6 +25,7 @@ from flask_login import (
 )
 from oauthlib.oauth2 import WebApplicationClient
 import requests
+import urllib.request
 from db import init_db_command
 from user import User
 import json
@@ -40,11 +53,17 @@ os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+@app.route('/static/profileImage.jpg')
+def serve_static():
+    return send_from_directory(app.static_folder, 'profileImage.jpg')
+
 
 @app.before_request
 def before_request():
     g.user_authenticated = current_user.is_authenticated
     g.profile_pic = get_profile_pic_url(current_user) if current_user.is_authenticated else None
+    g.random = random
+
 
 
 
@@ -101,6 +120,8 @@ def lastResults():
 
 def get_profile_pic_url(user):
     if user.is_authenticated:
+        urllib.request.urlretrieve(user.profile_pic, os.path.join(app.root_path, 'static', 'profileImage.jpg'))
+
         return user.profile_pic
     else:
         return None
