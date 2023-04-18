@@ -1,24 +1,22 @@
 import os
 import random
+from firebase_admin import auth
+
 
 from firebaseConf import *
 
 from flask import (
     Flask, 
-    render_template, 
-    session, 
-    abort, 
+    render_template,
     redirect, 
     request, 
-    url_for, 
-    send_file, 
+    url_for,
     g, 
     send_from_directory)
 
 from flask_login import (
     LoginManager,
     current_user,
-    login_required,
     login_user,
     logout_user,
 
@@ -62,9 +60,6 @@ def serve_static():
 def before_request():
     g.user_authenticated = current_user.is_authenticated
     g.profile_pic = get_profile_pic_url(current_user) if current_user.is_authenticated else None
-    g.random = random
-
-
 
 
 
@@ -98,12 +93,22 @@ def load_user(user_id):
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-
     nombresLoteria=["Euromillones", "Bonoloto", "Primitiva","elGordo"]
     if current_user.is_authenticated:
         profile_pic = current_user.profile_pic
 
-        return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults(), nombresLoterias=nombresLoteria)
+        id_token = current_user.id
+    
+
+
+
+
+        
+
+
+
+
+        return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults(), nombresLoterias=nombresLoteria, id=id_token)
     else:
         return render_template('home.html', name='Guest', resultsEuro=lastResults(), nombresLoterias=nombresLoteria)
 
@@ -125,6 +130,8 @@ def get_profile_pic_url(user):
         return user.profile_pic
     else:
         return None
+    
+
 
 @app.route('/logout')
 def logout():
@@ -174,8 +181,8 @@ def callback():
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers=headers, data=body)
     user_info = userinfo_response.json()
-
-    print(user_info)
+    print(token_response.json())
+    
 
     if user_info.get("email_verified"):
         unique_id = user_info['sub']
@@ -208,9 +215,15 @@ def about():
 
 @app.route('/marcadores', methods=['GET', 'POST'])
 def marcadores():
-    boletos = db.child("users").child(
-        'aqgquryQOHhk20mbcy1GKDsD7932').child('boletos').get().val()
-    return render_template('marcadores.html', t=boletos.values())
+    if current_user.is_authenticated:
+
+        boletos = db.child("users").child(
+        '48Jl70tv9WYv5ypJkzow3uRD5Jx1').child('boletos').get().val()
+        return render_template('marcadores.html', t=boletos.values())
+    else:
+            return redirect(url_for('home'))
+
+
 
 
 @app.route('/results', methods=['GET', 'POST'])

@@ -1,4 +1,10 @@
 import pyrebase
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import db as data
+
+
+from flask import session
 
 config = {
     "apiKey": "AIzaSyAoU0poXAGUm0QW_9M7_NhxDN2K_e3TeO4",
@@ -10,7 +16,14 @@ config = {
     "appId": "1:305510362883:web:14ca1915a9b0f75a794336"
 }
 
-firebase = pyrebase.initialize_app(config)
 
-db = firebase.database()
+cred = credentials.Certificate('admin.json')
+firebase_admin.initialize_app(cred)
+firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
+db = firebase.database()
+
+
+
+
+
