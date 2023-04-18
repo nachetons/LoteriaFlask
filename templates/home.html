@@ -7,26 +7,24 @@
 <body>
     {% include '/components/nav.html' %}
       <h1>ESTAS EN HOME</h1>
-        {{name}}
-        {{nombresLoterias}}
+      {{id}}
         <div class="content_balls">
         {% for i in range(nombresLoterias | length) %}
         <div class="euromillones_balls">
 
-        <h1>{{ nombresLoterias[i] }}</h1>
+        <h1 style="border: 2px solid black;">{{ nombresLoterias[i] }}</h1>
         <div class="combo">
+        {% if resultsEuro[i] is not none %}
         {% for number in resultsEuro[i] %}
         <div class="ball b{{i}}">{{ number }}</div>
         {% endfor %}
+        {% endif %}
+
         </div>
 
     </div>
     {% endfor %}
 </div>
-        <p>Ultimos resultados Euromillones: {{resultsEuro[0]}}</p>
-        <p>Ultimos resultados Bonoloto: {{resultsEuro[1]}}</p>
-        <p>Ultimos resultados Primitiva: {{resultsEuro[2]}}</p>
-        <p>Ultimos resultados el Gordo: {{resultsEuro[3]}}</p>
 
 
 

@@ -16,20 +16,23 @@
           <li class="nav-item">
             <a class="nav-link mx-2" href="../about">About</a>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Markers
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-              <li><a class="dropdown-item" href="#">Añadir</a></li>
-              <li><a class="dropdown-item" href="../marcadores">Check</a></li>
-              <li><a class="dropdown-item" href="#">Random</a></li>
-            </ul>
-          </li>
-        </ul>
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item mx-2" class="menu_image"> 
+          
+        
             {% if g.user_authenticated %}
+            <li class="nav-item dropdown">
+              <a class="nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Markers
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <li><a class="dropdown-item" href="#">Añadir</a></li>
+                <li><a class="dropdown-item" href="../marcadores">Check</a></li>
+                <li><a class="dropdown-item" href="#">Random</a></li>
+              </ul>
+            </li>
+          </ul>
+
+            <ul class="navbar-nav ms-auto">
+              <li class="nav-item mx-2" class="menu_image"> 
             <li class="nav-item dropdown">
                 <a class="nav-link text-dark h5 nav-link mx-2 dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false" target="blank"><img class='profilephoto' src="{{ url_for('static', filename='profileImage.jpg') }}"></a>
               </a>
@@ -40,7 +43,10 @@
               </ul>
             </li>
           {% else %}
-  
+        </ul>
+
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item mx-2" class="menu_image"> 
           <a class="nav-link text-dark h5" target="blank" id="myBtn" data-bs-toggle="modal" data-bs-target="#extraLargeModal"><img class='profilephoto' src="{{ url_for('static', filename='profileDefault.png') }}"></a>
 
           {% include '/components/login.html' %}  

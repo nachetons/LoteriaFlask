@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "loteria-a4008",
+  "private_key_id": "dd879f4fea077b85187e13a44d3ef8ea3f490c83",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDm4aSNhVZrSF67\n7orM8fPYeBcrhyEyvS6T43EunXvEEIGfQ5VnQjFc9p30XY078ZmQgfZwlyzatjf+\nNetH9C2MiBLa2KcEbOGPifleir9BcC2MP1R0T+WzD1+yrGsSaq2YXIwQp3Ycw79f\nkrHQ4sYc7L1vZKduMtd4NOSmBl6R8whBFnXLjnca3tcB+hKCoyKPP1S7A2wGiL23\nPlhOAmfhoT4WeqOHbad38EfYJSNV/fnN6NqPbKObsylICxjtYH9e/toNsJV9ZAGd\nRJHmcwTDUdt14GM9Jw5Z7Ij2E6ZNKd3JVBmL/eBxDrJ6AzHg/80b+0O+mncWmoRg\nz+D3b7oxAgMBAAECggEAVqZQr5xfNpxOkZGRHiGgNpm7eGaamwRNOsudarVIAel/\n/FnM9JfvFsint1J08w5VZ9qettrFxr+kfA+YYcTOY3OeP+wXop2Keeh6YnUIGnMT\nZRNPiueBeZZHgDMdbCgFRq1VE9sFhP4iEKhpe8/gMnLXFbtc6wrBuyd+uKCjVXp+\nCOz9hzt9BuYbC6mOHhq8GI8uGlFWju6TFtNn5HpnemOTlL8okQhpl+dkIz+/FQkX\naJu3+sMBmovUHbY8oQBcYJ3d6usKnr1xkAur6ZgpxSaiUZ8kHAP6AEt3FiVVAkPc\nX7iHL24ObJ5RRJGC4lLqsTquaXgGHGQLgru2ZmVX0QKBgQD6kL1YPV7U4srTe+8t\nHuOuRrGoZMEjM2K/b2kfO/w+MlI94aRg2WJNYsBHqCjaozVB1r+JGIZ//PNK2hZW\nda5SegyQU/RGmvGTjPaaBR9/7fJbf7SYVOgyGVEPXQjjTN0e3lQNMkGOk12yB/zQ\nyddHsixe7VOcf2fq7GNslXgEzwKBgQDr45uzzko7/Fga0c7X0iYuWQGCcFOtiB1F\nX/Q2CEy7GZC37bMb1aB+rLh4+nJp3x8EzUmz0SC2cVrXC2MFQSWRLXKIP/MfXO4T\nfzOS0wD3ue7OL9vhmxler2B83rsggznRKFDebhTFKTSf/mxiofF41rSLQ4iOBgsX\nSCJrc4oQ/wKBgQCHTTNBe9pCgLjfnFPZ/I0bpYb3lHiKhovzLbkJKb4a49dvHPJD\nbf9cJFAKIa716R2wEMNax4iRgkjqCXv4chGQ7eDs6rjEi5SZhYwAPXX2AcpWSE5/\n15GOxAb2kdljzDS3H30ppxKpZ8A3i4KkR+ndCERXejYlEtNNkxpZHxkxFwKBgEcU\nWsKfkrbonxPVzOIzrNWidFX9yvkrXsac11XAwn5OgdEqiyIECUyidyPdM8S7OvmT\ncnYAuj6/gYPzJm9a5hsM+sobmwMEWaj+V2gStOPw3wi6WyNsPQTPC+AUrYZqhG2G\nHHgp65BNjlH3tGk0KzMiX1zniKpjH8xwLA78zcm5AoGAbcBkna2HV8RI081t13qW\nF+2xgjvGmUMmNwMc8fU5dwh/y07TiWURYozI4cNMHA/HF3xO6yEVgTPRBpOfA9iV\n25ZSgOiLCA+RguaSWdclGIuQ+N41We5dLGbJgdA+xYo18rl5cLNUGcvpI+m6TVX8\n3RlAxeMKlomQnXmWwmTBJxQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-5x410@loteria-a4008.iam.gserviceaccount.com",
+  "client_id": "100759612842149102860",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-5x410%40loteria-a4008.iam.gserviceaccount.com"
+}
