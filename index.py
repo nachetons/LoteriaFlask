@@ -2,6 +2,8 @@ import os
 from firebaseConf import *
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
+from datetime import datetime
+
 import jwt
 import json
 
@@ -223,9 +225,38 @@ def about():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
+
+    if request.method == 'POST':
+        print("hola")
+        procesar_datos_formulario(request.form)
+        return 'Formulario enviado correctamente'
+
     return render_template('add.html')
 
+def procesar_datos_formulario(datos_formulario):
+    # Aquí procesas los datos del formulario
+    loteria = datos_formulario['loteria']
+    fecha = datos_formulario['fecha']
+    apuesta = datos_formulario['apuesta']
+    complemento = datos_formulario['complemento']
 
+    fecha2=fecha.replace("-","/")
+    fecha_datetime = datetime.strptime(fecha2, "%Y/%m/%d")
+    fecha_formateada = fecha_datetime.strftime("%d/%m/%Y")
+
+
+    #set boleto db
+    db.child("users").child(
+        g.user_ref.uid).child('boletos').child(fecha+'_'+apuesta+'_'+complemento+'_'+loteria).set(
+        {"sorteo": loteria,
+        "fecha": fecha_formateada, 
+        "numero": apuesta, 
+        "extra": complemento,
+        "premio": "premio",
+        "estado": "pendiente"})
+
+    print(loteria, fecha, apuesta, complemento)
+    
 @app.route('/marcadores', methods=['GET', 'POST'])
 def marcadores():
     if current_user.is_authenticated:

@@ -6,16 +6,23 @@
 <body>
     {% include '/components/nav.html' %}
     <h1>ESTAS EN AÑADIR BOLETO</h1>
+    <form method="POST" action="{{ url_for('add') }}">
     <label>Loteria</label>
-    <select>
-        <option value="1">Euromillones</option>
-        <option value="2">Primitiva</option>
-        <option value="3">Bonoloto</option>
-        <option value="4">Quiniela</option>
-        <option value="5">Quinigol</option>
-        <option value="6">Loteria Nacional</option>
-        <option value="7">Loteria Navidad</option>
-        <option value="8">Loteria Niño</option>
+    <select name="loteria">
+        <option value="euromillones">Euromillones</option>
+        <option value="primitiva">Primitiva</option>
+        <option value="bonoloto">Bonoloto</option>
+        <option value="quiniela">Quiniela</option>
     </select>
+    <label>Fecha</label>
+    <input type="date" name="fecha" id="fecha">
+    <label>Apuesta</label>
+    <input type="text" name="apuesta" id="apuesta">
+    <label>Complementario</label>
+    <input type="text" placeholder="01-11" name="complemento" id="complementario">
+    <button type="submit">Enviar</button>
+    </form>
+
+    
 </body>
 </html>
