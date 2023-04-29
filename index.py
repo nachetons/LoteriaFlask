@@ -1,9 +1,11 @@
 import os
-import random
-from firebase_admin import auth
-
-
 from firebaseConf import *
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+import jwt
+import json
+
+
 
 from flask import (
     Flask, 
@@ -34,19 +36,18 @@ from functools import wraps
 
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', None)
 GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', None)
-
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+certificate_url = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'
 
+google_request = google_requests.Request()
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-# to allow Http traffic for local dev
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -60,6 +61,8 @@ def serve_static():
 def before_request():
     g.user_authenticated = current_user.is_authenticated
     g.profile_pic = get_profile_pic_url(current_user) if current_user.is_authenticated else None
+    g.user_ref = auth2.get_user_by_email(current_user.email) if current_user.is_authenticated else None
+
 
 
 
@@ -80,7 +83,6 @@ def unauthorized():
 try:
     init_db_command()
 except sqlite3.OperationalError:
-    # Assume it's already been created
     pass
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
 
@@ -95,20 +97,11 @@ def load_user(user_id):
 def home():
     nombresLoteria=["Euromillones", "Bonoloto", "Primitiva","elGordo"]
     if current_user.is_authenticated:
-        profile_pic = current_user.profile_pic
-
+        profile_pic = current_user.profile_pic        
+       
         id_token = current_user.id
-    
 
-
-
-
-        
-
-
-
-
-        return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults(), nombresLoterias=nombresLoteria, id=id_token)
+        return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults(), nombresLoterias=nombresLoteria, id=g.user_ref.uid)
     else:
         return render_template('home.html', name='Guest', resultsEuro=lastResults(), nombresLoterias=nombresLoteria)
 
@@ -133,6 +126,19 @@ def get_profile_pic_url(user):
     
 
 
+def decode_token(token):
+    decoded_token = jwt.decode(token, verify=False, algorithms=['RS256'])
+    return decoded_token
+    
+
+def get_id_token(request):
+    id_token_cookie = request.cookies.get("token")
+    if id_token_cookie:
+        return id_token_cookie
+    return None
+
+
+
 @app.route('/logout')
 def logout():
     logout_user()
@@ -141,6 +147,7 @@ def logout():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    
     google_provider_cfg = get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
@@ -162,7 +169,6 @@ def callback():
     google_provider_cfg = get_google_provider_cfg()
 
     token_endpoint = google_provider_cfg['token_endpoint']
-
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response=request.url,
@@ -181,14 +187,13 @@ def callback():
     uri, headers, body = client.add_token(userinfo_endpoint)
     userinfo_response = requests.get(uri, headers=headers, data=body)
     user_info = userinfo_response.json()
-    print(token_response.json())
     
-
     if user_info.get("email_verified"):
         unique_id = user_info['sub']
         users_email = user_info['email']
         picture = user_info['picture']
         users_name = user_info['given_name']
+        
 
     else:
         return "User email not available or not verified by Google.", 400
@@ -202,15 +207,23 @@ def callback():
         User.create(unique_id, users_name, users_email, picture)
 
     login_user(user)
-
+    
+       
     return redirect(url_for('home'))
+
+
+    
 
 
 @app.route('/about', methods=['GET', 'POST'])
 def about():
     data = []
-    # ref = db.reference('users').child('jaZWAoZQn6yKbOERUtL2')
     return render_template('about.html')
+
+
+@app.route('/add', methods=['GET', 'POST'])
+def add():
+    return render_template('add.html')
 
 
 @app.route('/marcadores', methods=['GET', 'POST'])
@@ -218,7 +231,7 @@ def marcadores():
     if current_user.is_authenticated:
 
         boletos = db.child("users").child(
-        '48Jl70tv9WYv5ypJkzow3uRD5Jx1').child('boletos').get().val()
+        g.user_ref.uid).child('boletos').get().val()
         return render_template('marcadores.html', t=boletos.values())
     else:
             return redirect(url_for('home'))

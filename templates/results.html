@@ -12,6 +12,17 @@
         <div class="row my-3">
             <div class="col">
                 <h4>Estadistica de apuestas</h4>
+                <select>
+                    <option value="1">Semana</option>
+                    <option value="2">Mes</option>
+                    <option value="3">Año</option>
+                </select>
+
+                <select>
+                    <option value="1">Apuestas</option>
+                    <option value="2">Ganancias</option>
+                    <option value="3">Perdidas</option>
+                </select>
             </div>
         </div>
         <div class="row my-2">
@@ -31,7 +42,7 @@
 var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
 var chLine = document.getElementById("chLine");
 var chartData = {
-  labels: ["S", "M", "T", "W", "T", "F", "S"],
+  labels: ["L", "M", "X", "J", "V", "S", "D"],
   datasets: [{
     data: [900, 200, 500, 0, 900, 0, 500],
     backgroundColor: 'transparent',

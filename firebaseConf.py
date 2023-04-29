@@ -1,10 +1,7 @@
 import pyrebase
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import db as data
+from firebase_admin import credentials,initialize_app
+from firebase_admin import auth as auth2
 
-
-from flask import session
 
 config = {
     "apiKey": "AIzaSyAoU0poXAGUm0QW_9M7_NhxDN2K_e3TeO4",
@@ -16,12 +13,15 @@ config = {
     "appId": "1:305510362883:web:14ca1915a9b0f75a794336"
 }
 
-
-cred = credentials.Certificate('admin.json')
-firebase_admin.initialize_app(cred)
 firebase = pyrebase.initialize_app(config)
 auth = firebase.auth()
 db = firebase.database()
+
+
+cred = credentials.Certificate("admin.json")
+default_app = initialize_app(cred, {'databaseURL': 'https://loteria-1f0e0-default-rtdb.europe-west1.firebasedatabase.app/'})
+
+
 
 
 
