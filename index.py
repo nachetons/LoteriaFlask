@@ -235,7 +235,6 @@ def video():
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
-
 @app.route('/marcadores', methods=['GET', 'POST'])
 def marcadores():
     if current_user.is_authenticated:
@@ -266,3 +265,5 @@ def profile():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
