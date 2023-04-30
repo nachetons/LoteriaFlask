@@ -1,11 +1,8 @@
 import os
 from firebaseConf import *
-from google.oauth2 import id_token
-from google.auth.transport import requests as google_requests
 from datetime import datetime
-
-import jwt
 import json
+from face_detector import *
 
 
 
@@ -13,7 +10,8 @@ from flask import (
     Flask, 
     render_template,
     redirect, 
-    request, 
+    request,
+    Response, 
     url_for,
     g, 
     send_from_directory)
@@ -32,8 +30,6 @@ from db import init_db_command
 from user import User
 import json
 import sqlite3
-from functools import wraps
-
 
 
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', None)
@@ -46,13 +42,12 @@ app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
 certificate_url = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'
 
-google_request = google_requests.Request()
-
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+
 
 @app.route('/static/profileImage.jpg')
 def serve_static():
@@ -66,12 +61,9 @@ def before_request():
     g.user_ref = auth2.get_user_by_email(current_user.email) if current_user.is_authenticated else None
 
 
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return user_id
-
 
 
 @login_manager.unauthorized_handler
@@ -81,13 +73,11 @@ def unauthorized():
     return "You must be logged in to access this content.", 403
 
 
-
 try:
     init_db_command()
 except sqlite3.OperationalError:
     pass
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
-
 
 
 @login_manager.user_loader
@@ -116,6 +106,8 @@ def lastResults():
     return Euromillones, Bonoloto, Primitiva, ElGordo
 
 
+def get_google_provider_cfg():
+    return requests.get(GOOGLE_DISCOVERY_URL).json()
 
 
 def get_profile_pic_url(user):
@@ -125,28 +117,6 @@ def get_profile_pic_url(user):
         return user.profile_pic
     else:
         return None
-    
-
-
-def decode_token(token):
-    decoded_token = jwt.decode(token, verify=False, algorithms=['RS256'])
-    return decoded_token
-    
-
-def get_id_token(request):
-    id_token_cookie = request.cookies.get("token")
-    if id_token_cookie:
-        return id_token_cookie
-    return None
-
-
-
-@app.route('/logout')
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-
-
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     
@@ -159,11 +129,6 @@ def login():
         scope=["openid", "email", "profile"],
     )
     return redirect(request_uri)
-
-
-def get_google_provider_cfg():
-    return requests.get(GOOGLE_DISCOVERY_URL).json()
-
 
 @app.route("/login/callback")
 def callback():
@@ -214,8 +179,10 @@ def callback():
     return redirect(url_for('home'))
 
 
-    
-
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 @app.route('/about', methods=['GET', 'POST'])
 def about():
@@ -225,11 +192,15 @@ def about():
 
 @app.route('/add', methods=['GET', 'POST'])
 def add():
+    if current_user.is_authenticated:
 
-    if request.method == 'POST':
-        print("hola")
-        procesar_datos_formulario(request.form)
-        return 'Formulario enviado correctamente'
+        if request.method == 'POST':
+            procesar_datos_formulario(request.form)
+            return render_template('add.html')
+    else:
+        return redirect(url_for('home'))
+
+
 
     return render_template('add.html')
 
@@ -244,8 +215,6 @@ def procesar_datos_formulario(datos_formulario):
     fecha_datetime = datetime.strptime(fecha2, "%Y/%m/%d")
     fecha_formateada = fecha_datetime.strftime("%d/%m/%Y")
 
-
-    #set boleto db
     db.child("users").child(
         g.user_ref.uid).child('boletos').child(fecha+'_'+apuesta+'_'+complemento+'_'+loteria).set(
         {"sorteo": loteria,
@@ -256,11 +225,20 @@ def procesar_datos_formulario(datos_formulario):
         "estado": "pendiente"})
 
     print(loteria, fecha, apuesta, complemento)
-    
+
+
+
+
+@app.route('/video', methods=['GET', 'POST'])
+def video():
+    return Response(captureWebcam(),
+                    mimetype='multipart/x-mixed-replace; boundary=frame')
+
+
+
 @app.route('/marcadores', methods=['GET', 'POST'])
 def marcadores():
     if current_user.is_authenticated:
-
         boletos = db.child("users").child(
         g.user_ref.uid).child('boletos').get().val()
         return render_template('marcadores.html', t=boletos.values())

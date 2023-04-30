@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% include '/components/links.html' %}
 </head>
+
 <body>
     {% include '/components/nav.html' %}
     <h1>ESTAS EN AÑADIR BOLETO</h1>
     <form method="POST" action="{{ url_for('add') }}">
-    <label>Loteria</label>
-    <select name="loteria">
-        <option value="euromillones">Euromillones</option>
-        <option value="primitiva">Primitiva</option>
-        <option value="bonoloto">Bonoloto</option>
-        <option value="quiniela">Quiniela</option>
-    </select>
-    <label>Fecha</label>
-    <input type="date" name="fecha" id="fecha">
-    <label>Apuesta</label>
-    <input type="text" name="apuesta" id="apuesta">
-    <label>Complementario</label>
-    <input type="text" placeholder="01-11" name="complemento" id="complementario">
-    <button type="submit">Enviar</button>
+        <label>Loteria</label>
+        <select name="loteria">
+            <option value="euromillones">Euromillones</option>
+            <option value="primitiva">Primitiva</option>
+            <option value="bonoloto">Bonoloto</option>
+            <option value="quiniela">Quiniela</option>
+        </select>
+        <label>Fecha</label>
+        <input type="date" name="fecha" id="fecha">
+        <label>Apuesta</label>
+        <input type="text" name="apuesta" id="apuesta">
+        <label>Complementario</label>
+        <input type="text" placeholder="01-11" name="complemento" id="complementario">
+        <button type="submit">Enviar</button>
+    </form>
+    <form method="POST" action="{{ url_for('video') }}">
+        <button type="submit">Ejecutar función</button>
     </form>
 
-    
+  
+
+
+
+
+    {% include '/components/footer.html' %}
+
+
+
 </body>
+
 </html>
