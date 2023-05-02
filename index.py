@@ -2,8 +2,8 @@ import os
 from firebaseConf import *
 from datetime import datetime
 import json
-from face_detector import *
-
+from scripts.scanner import *
+import base64
 
 
 from flask import (
@@ -193,10 +193,16 @@ def about():
 @app.route('/add', methods=['GET', 'POST'])
 def add():
     if current_user.is_authenticated:
-
         if request.method == 'POST':
-            procesar_datos_formulario(request.form)
-            return render_template('add.html')
+            if request.files['image'] != '':
+                archivo = request.files['image']
+                sendImage(archivo)
+                return render_template('add.html')
+
+            else:
+                procesar_datos_formulario(request.form)
+                return render_template('add.html')
+
     else:
         return redirect(url_for('home'))
     
@@ -224,11 +230,19 @@ def procesar_datos_formulario(datos_formulario):
 
     print(loteria, fecha, apuesta, complemento)
 
+def sendImage(image):
+    template = cv2.imread('static/euromillones.png')
+    #save image in local
+    image.save(os.path.join(app.root_path, 'temp', 'image.jpg'))
+    
+    image2 = cv2.imread(os.path.join(app.root_path, 'temp', 'image.jpg'))
 
-@app.route('/video', methods=['GET', 'POST'])
-def video():
-    return Response(captureWebcam(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+    
+    align_images(image2,template)
+
+
+
+    #align_images(image, template)
 
 
 @app.route('/marcadores', methods=['GET', 'POST'])

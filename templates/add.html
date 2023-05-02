@@ -7,7 +7,9 @@
 
 <body>
     {% include '/components/nav.html' %}
-    <h1>ESTAS EN AÑADIR BOLETO</h1>
+    <br>
+    <br>
+
     <form method="POST" action="{{ url_for('add') }}">
         <label>Loteria</label>
         <select name="loteria">
@@ -24,9 +26,16 @@
         <input type="text" placeholder="01-11" name="complemento" id="complementario">
         <button type="submit">Enviar</button>
     </form>
-    <form method="POST" action="{{ url_for('video') }}">
-        <button type="submit">Ejecutar función</button>
+    <br>
+    <br>
+
+    <h2>AÑADIR BOLETO ATRAVES DE IMAGEN</h2>
+    <form method="POST" enctype='multipart/form-data' action="{{ url_for('add') }}">
+        <!--input file image and any accept format png jpeg jpg-->
+        <input type="file" name="image" accept="image/*">
+        <button type="submit">Enviar</button>
     </form>
+    
     
 
     
