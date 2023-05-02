@@ -16,6 +16,8 @@
         <th scope="col">Date</th>
         <th scope="col">Prize</th>
         <th scope="col">Status</th>
+        <th scope="col"></th>
+
 
       </tr>
     </thead>
@@ -23,17 +25,22 @@
       {% for l in t %}
       <tr class="table-dark">
         <th scope="row">1</th>
-        <td class="table-dark">{{ l.sorteo }}</td>
-        <td class="table-dark">{{ l.numero }}</td>
-        <td class="table-dark">{{ l.extra }}</td>
-        <td class="table-dark">{{ l.fecha }}</td>
-        <td class="table-dark">{{ l.premio }}</td>
-        <td class="table-dark">{{ l.estado }}</td>
+        <form method="POST" action="{{ url_for('marcadores') }}">
+        <td class="table-dark" value="{{ l.sorteo }}">{{ l.sorteo }}</td>
+        <td class="table-dark" value="{{ l.numero }}">{{ l.numero }}</td>
+        <td class="table-dark" value="{{ l.extra }}">{{ l.extra }}</td>
+        <td class="table-dark" value="{{ l.fecha }}">{{ l.fecha }}</td>
+        <td class="table-dark" value="{{ l.premio }}">{{ l.premio }}</td>
+        <td class="table-dark" value="{{ l.estado }}">{{ l.estado }}</td>
+          <td class="table-dark"><button type="submit" name="data" value="{{ l.sorteo, l.fecha, l.numero, l.extra }}">Borrar</button></td>
+        </form>
       </tr>
       {% endfor %}
     
     </tbody>
   </table>
+
+
   
   {% include '/components/footer.html' %}
 

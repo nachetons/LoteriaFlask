@@ -199,9 +199,7 @@ def add():
             return render_template('add.html')
     else:
         return redirect(url_for('home'))
-
-
-
+    
     return render_template('add.html')
 
 def procesar_datos_formulario(datos_formulario):
@@ -227,8 +225,6 @@ def procesar_datos_formulario(datos_formulario):
     print(loteria, fecha, apuesta, complemento)
 
 
-
-
 @app.route('/video', methods=['GET', 'POST'])
 def video():
     return Response(captureWebcam(),
@@ -240,13 +236,43 @@ def marcadores():
     if current_user.is_authenticated:
         boletos = db.child("users").child(
         g.user_ref.uid).child('boletos').get().val()
+        if request.method == 'POST':
+            return delete(request.form)
         return render_template('marcadores.html', t=boletos.values())
     else:
-            return redirect(url_for('home'))
+        return redirect(url_for('home'))
+    
+def delete(info):
+    if request.method == 'POST':
+        print("Estas en delete")
+        print(info['data'])
+        procesar_datos_formulario2(info['data'])
 
+        return redirect(url_for('marcadores'))
+    else:
+        return redirect(url_for('marcadores'))
 
+def procesar_datos_formulario2(datos_formulario):
+    # Aquí procesas los datos del formulario
+    datos_formulario_parser = datos_formulario.split(",")
+    loteria = datos_formulario_parser[0].strip().strip("(").strip("'")
+    fecha = datos_formulario_parser[1].strip()
+    apuesta = datos_formulario_parser[2].strip().strip("'")
+    complemento = datos_formulario_parser[3].strip().strip(")").strip("'")
 
+    fecha_sin_comillas = fecha.strip("'")
+    
+    fecha_datetime = datetime.strptime(fecha_sin_comillas, "%d/%m/%Y")
+    fecha_formateada = fecha_datetime.strftime("%Y/%m/%d")
+    fecha_final = fecha_formateada.replace("/","-")
 
+    db.child("users").child(
+        g.user_ref.uid).child('boletos').child(fecha_final+'_'+apuesta+'_'+complemento+'_'+loteria).remove()
+    
+    print(fecha_formateada+'_'+apuesta+'_'+complemento+'_'+loteria)
+    
+
+    print(loteria, fecha, apuesta, complemento)
 @app.route('/results', methods=['GET', 'POST'])
 def results():
     return render_template('results.html')
