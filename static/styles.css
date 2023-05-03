@@ -171,9 +171,6 @@ ul.dropdown-menu.menu_profile.show{
 }
 .combo{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30%;
   
 }
 .euromillones_balls{
@@ -185,9 +182,8 @@ ul.dropdown-menu.menu_profile.show{
   margin-bottom: 5%;
 }
 .content_balls{
-  width: 100%;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
 }
 .ball:hover{
   cursor: pointer;
@@ -210,6 +206,10 @@ ul.dropdown-menu.menu_profile.show{
   background: radial-gradient(circle at 65% 15%, white 1px, rgb(255, 231, 152) 3%, rgb(255, 98, 0) 60%, rgb(255, 233, 160) 100%);  
 }
 @media (max-width: 990px) {
+  .content_balls{
+    display: grid;
+    grid-template-columns: repeat(1,1fr);
+  }
 /*change view menu_image to mobile size*/
 .menu_profile{
   

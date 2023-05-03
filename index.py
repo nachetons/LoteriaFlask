@@ -3,7 +3,7 @@ from firebaseConf import *
 from datetime import datetime
 import json
 from scripts.scanner import *
-import base64
+import database
 
 
 from flask import (
@@ -194,7 +194,7 @@ def about():
 def add():
     if current_user.is_authenticated:
         if request.method == 'POST':
-            if request.files['image'] != '':
+            if 'image' in request.files:
                 archivo = request.files['image']
                 sendImage(archivo)
                 return render_template('add.html')
@@ -218,31 +218,16 @@ def procesar_datos_formulario(datos_formulario):
     fecha2=fecha.replace("-","/")
     fecha_datetime = datetime.strptime(fecha2, "%Y/%m/%d")
     fecha_formateada = fecha_datetime.strftime("%d/%m/%Y")
-
-    db.child("users").child(
-        g.user_ref.uid).child('boletos').child(fecha+'_'+apuesta+'_'+complemento+'_'+loteria).set(
-        {"sorteo": loteria,
-        "fecha": fecha_formateada, 
-        "numero": apuesta, 
-        "extra": complemento,
-        "premio": "premio",
-        "estado": "pendiente"})
-
+    database.addBoleto(g.user_ref.uid, fecha, fecha_formateada, apuesta, complemento, loteria)
+    
     print(loteria, fecha, apuesta, complemento)
 
 def sendImage(image):
-    template = cv2.imread('static/euromillones.png')
-    #save image in local
+    template = cv2.imread('static/templates/euromillonesTemplate.png')
     image.save(os.path.join(app.root_path, 'temp', 'image.jpg'))
     
     image2 = cv2.imread(os.path.join(app.root_path, 'temp', 'image.jpg'))
-
-    
     align_images(image2,template)
-
-
-
-    #align_images(image, template)
 
 
 @app.route('/marcadores', methods=['GET', 'POST'])
@@ -259,7 +244,6 @@ def marcadores():
 def delete(info):
     if request.method == 'POST':
         print("Estas en delete")
-        print(info['data'])
         procesar_datos_formulario2(info['data'])
 
         return redirect(url_for('marcadores'))
@@ -279,14 +263,8 @@ def procesar_datos_formulario2(datos_formulario):
     fecha_datetime = datetime.strptime(fecha_sin_comillas, "%d/%m/%Y")
     fecha_formateada = fecha_datetime.strftime("%Y/%m/%d")
     fecha_final = fecha_formateada.replace("/","-")
+    database.eliminarBoleto(g.user_ref.uid,fecha_final,apuesta,complemento,loteria)
 
-    db.child("users").child(
-        g.user_ref.uid).child('boletos').child(fecha_final+'_'+apuesta+'_'+complemento+'_'+loteria).remove()
-    
-    print(fecha_formateada+'_'+apuesta+'_'+complemento+'_'+loteria)
-    
-
-    print(loteria, fecha, apuesta, complemento)
 @app.route('/results', methods=['GET', 'POST'])
 def results():
     return render_template('results.html')
