@@ -14,7 +14,8 @@ from flask import (
     request,
     Response, 
     url_for,
-    g, 
+    g,
+    jsonify,
     send_from_directory,
     flash)
 
