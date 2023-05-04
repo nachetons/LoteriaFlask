@@ -3,8 +3,7 @@ import numpy as np
 import pytesseract
 import imutils
 from datetime import datetime
-
-
+import scripts.database as database
 pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
 
@@ -13,7 +12,7 @@ pytesseract.pytesseract.tesseract_cmd = 'C:/Program Files/Tesseract-OCR/tesserac
 # route rel path image
 
 
-def align_images(image, template, maxFeatures=500, keepPercent=0.2,
+def align_images(image, template,currentUser, maxFeatures=500, keepPercent=0.2,
 	debug=False):
 	# transformar la imagen a escala de grises
 	imageGray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -66,19 +65,19 @@ def align_images(image, template, maxFeatures=500, keepPercent=0.2,
 	aligned = cv2.warpPerspective(image, H, (w, h))
 	aligned2 = cv2.resize(aligned, None, fx=0.5, fy=0.5,
 	                      interpolation=cv2.INTER_CUBIC)
-	readImages(aligned)
+	readImages(aligned, currentUser)
 	# cv2.imshow("Aligned", aligned2)
 	# cv2.waitKey(0)
 	# cv2.destroyAllWindows()
 
 pytesseractText = []
 
-def readImages(image):
+def readImages(image, currentUser):
     pytesseract.pytesseract.tesseract_cmd = "C:/Program Files/Tesseract-OCR/tesseract.exe"
     coordenadas = [
     ((250, 470), (1130, 550)),
-    ((475, 930), (1000, 1010)),
-    ((450, 200), (1200, 280))
+    ((500, 930), (900, 990)),
+    ((430, 215), (1000, 290))
 ]
     for coord in coordenadas:
      (x1, y1), (x2, y2) = coord
@@ -90,8 +89,14 @@ def readImages(image):
      cv2.rectangle(image2, (x1, y1), (x2, y2), (0, 0, 255), 2)
      roi = cv2.getRectSubPix(image2, (w, h), (x1 + w/2, y1 + h/2))
      text = pytesseract.image_to_string(roi,lang='spa')
+     
      pytesseractText.append(text)
-    parserText(pytesseractText)	
+    if(len(pytesseractText) == 3):
+	    parserText(pytesseractText, currentUser)
+	    
+	    
+	     
+	
      
      #cv2.imshow('roi', roi) 
      #cv2.waitKey(0)
@@ -99,8 +104,7 @@ def readImages(image):
 
     
 
-def parserText(pytesseractText):
-	#remove all \n
+def parserText(pytesseractText, currentUser):
 	meses = {
     'ENE': '01',
     'FEB': '02',
@@ -116,12 +120,11 @@ def parserText(pytesseractText):
     'DIC': '12',
 }
 	fecha = pytesseractText[1].replace('\n','')
-
 	dia, mes_abr, anio = fecha.split(' ')
 	mes = meses[mes_abr]
 	fecha_datetime = datetime.strptime(f'{dia} {mes} {anio}', '%d %m %y')
 	fecha_nueva = fecha_datetime.strftime('%Y-%m-%d')
-
+	fechaFormateada = fecha_datetime.strftime('%d/%m/%Y')	
 	
 	numeroComplemento = pytesseractText[0].replace('\n','')
 	numeroSorteo, complemento = numeroComplemento.split('+')
@@ -129,16 +132,26 @@ def parserText(pytesseractText):
 	complemento = complemento.replace(' ','-')
 	complemento = complemento[1:]  
 
-
-
 	sorteo = pytesseractText[2].replace('\n','').lower()
 	pytesseractText.clear()
 
+	content = fecha_nueva+'_'+numeroSorteo+'_'+complemento+'_'+sorteo
+	print('Texto: ',content)
+	database.addBoleto(
+		currentUser,
+		fecha_nueva,
+		fechaFormateada,
+		numeroSorteo,
+		complemento,
+		sorteo,
+
+	)
 
 	
 
 
-	print('Texto: ',fecha_nueva+'_'+numeroSorteo+'_'+complemento+'_'+sorteo)
+	
+	
 
 #align_images(image, template, debug=True)
 	

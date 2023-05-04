@@ -9,7 +9,6 @@
   <table class="table table-dark">
     <thead>
       <tr class="table-dark">
-        <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Number</th>
         <th scope="col">Adds</th>
@@ -24,7 +23,6 @@
     <tbody>
       {% for l in t %}
       <tr class="table-dark">
-        <th scope="row">1</th>
         <form method="POST" action="{{ url_for('marcadores') }}">
         <td class="table-dark" value="{{ l.sorteo }}">{{ l.sorteo }}</td>
         <td class="table-dark" value="{{ l.numero }}">{{ l.numero }}</td>

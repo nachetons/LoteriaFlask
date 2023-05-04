@@ -1,36 +1,4 @@
-import os
-from firebaseConf import *
-from datetime import datetime
-import json
-from scripts.scanner import *
-import database
-
-
-from flask import (
-    Flask, 
-    render_template,
-    redirect, 
-    request,
-    Response, 
-    url_for,
-    g, 
-    send_from_directory)
-
-from flask_login import (
-    LoginManager,
-    current_user,
-    login_user,
-    logout_user,
-
-)
-from oauthlib.oauth2 import WebApplicationClient
-import requests
-import urllib.request
-from db import init_db_command
-from user import User
-import json
-import sqlite3
-
+from scripts.dependencies import *
 
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', None)
 GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', None)
@@ -90,20 +58,11 @@ def home():
     nombresLoteria=["Euromillones", "Bonoloto", "Primitiva","elGordo"]
     if current_user.is_authenticated:
         profile_pic = current_user.profile_pic        
-       
-        id_token = current_user.id
 
         return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults(), nombresLoterias=nombresLoteria, id=g.user_ref.uid)
     else:
         return render_template('home.html', name='Guest', resultsEuro=lastResults(), nombresLoterias=nombresLoteria)
 
-def lastResults():
-    Euromillones=db.child("ultimosresultados/euromillones/resultado").get().val()
-    Bonoloto=db.child("ultimosresultados/bonoloto/resultado").get().val()
-    Primitiva=db.child("ultimosresultados/primitiva/resultado").get().val()
-    ElGordo=db.child("ultimosresultados/elgordo/resultado").get().val()
-
-    return Euromillones, Bonoloto, Primitiva, ElGordo
 
 
 def get_google_provider_cfg():
@@ -200,7 +159,7 @@ def add():
                 return render_template('add.html')
 
             else:
-                procesar_datos_formulario(request.form)
+                procesar_datos_formulario(request.form, g.user_ref.uid)
                 return render_template('add.html')
 
     else:
@@ -208,27 +167,14 @@ def add():
     
     return render_template('add.html')
 
-def procesar_datos_formulario(datos_formulario):
-    # Aquí procesas los datos del formulario
-    loteria = datos_formulario['loteria']
-    fecha = datos_formulario['fecha']
-    apuesta = datos_formulario['apuesta']
-    complemento = datos_formulario['complemento']
-
-    fecha2=fecha.replace("-","/")
-    fecha_datetime = datetime.strptime(fecha2, "%Y/%m/%d")
-    fecha_formateada = fecha_datetime.strftime("%d/%m/%Y")
-    database.addBoleto(g.user_ref.uid, fecha, fecha_formateada, apuesta, complemento, loteria)
-    
-    print(loteria, fecha, apuesta, complemento)
 
 def sendImage(image):
     template = cv2.imread('static/templates/euromillonesTemplate.png')
     image.save(os.path.join(app.root_path, 'temp', 'image.jpg'))
     
     image2 = cv2.imread(os.path.join(app.root_path, 'temp', 'image.jpg'))
-    align_images(image2,template)
-
+    align_images(image2,template,g.user_ref.uid)
+  
 
 @app.route('/marcadores', methods=['GET', 'POST'])
 def marcadores():
@@ -244,26 +190,13 @@ def marcadores():
 def delete(info):
     if request.method == 'POST':
         print("Estas en delete")
-        procesar_datos_formulario2(info['data'])
+        procesar_datos_formulario2(info['data'], g.user_ref.uid)
 
         return redirect(url_for('marcadores'))
     else:
         return redirect(url_for('marcadores'))
-
-def procesar_datos_formulario2(datos_formulario):
-    # Aquí procesas los datos del formulario
-    datos_formulario_parser = datos_formulario.split(",")
-    loteria = datos_formulario_parser[0].strip().strip("(").strip("'")
-    fecha = datos_formulario_parser[1].strip()
-    apuesta = datos_formulario_parser[2].strip().strip("'")
-    complemento = datos_formulario_parser[3].strip().strip(")").strip("'")
-
-    fecha_sin_comillas = fecha.strip("'")
     
-    fecha_datetime = datetime.strptime(fecha_sin_comillas, "%d/%m/%Y")
-    fecha_formateada = fecha_datetime.strftime("%Y/%m/%d")
-    fecha_final = fecha_formateada.replace("/","-")
-    database.eliminarBoleto(g.user_ref.uid,fecha_final,apuesta,complemento,loteria)
+
 
 @app.route('/results', methods=['GET', 'POST'])
 def results():
