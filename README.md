@@ -1,5 +1,7 @@
 "# LoteriaFlask" 
 
+INSTALACION
+
 Esta aplicacion de Loteria esta creada en flask utiliza libreria de bootstrap y se conecta a la base de datos firebase para poder arrancarla se debe seguir lo siguientes pasos:
 
 1. Tener instalado python 3.9
@@ -13,3 +15,11 @@ Esta aplicacion de Loteria esta creada en flask utiliza libreria de bootstrap y 
 5. Generar la clave privada admin sdk del certificado de tu base de datos, añadirlo a la raiz del proyecto, cambiarle el nombre a admin.json
 
 ![image](https://user-images.githubusercontent.com/46556874/236477191-62dba4dc-1705-4904-9635-92e332f28fb5.png)
+
+
+ARRANCAR PROYECTO
+
+Para arrancar el proyecto debemos ejectar el comando "flask run"
+
+
+DEMO DEL PROYECTO
