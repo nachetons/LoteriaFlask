@@ -1,5 +1,3 @@
-"# LoteriaFlask" 
-
 ## DEMO DEL PROYECTO
 Esta aplicacion de Loteria esta creada en flask utiliza la libreria de bootstrap4 y se conecta a la base de datos firebase.
 Este proyecto te aporta distintas utilidades:
@@ -34,5 +32,3 @@ Para arrancar el proyecto debemos ejectar el comando:
 ```sh
 flask run
 ```
-
-## DEMO DEL PROYECTO
