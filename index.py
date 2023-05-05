@@ -8,11 +8,9 @@ GOOGLE_DISCOVERY_URL = (
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
-certificate_url = 'https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com'
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -179,11 +177,10 @@ def sendImage(image):
 @app.route('/marcadores', methods=['GET', 'POST'])
 def marcadores():
     if current_user.is_authenticated:
-        boletos = db.child("users").child(
-        g.user_ref.uid).child('boletos').get().val()
+        boletos = database.getBoletos(g.user_ref.uid)
         if request.method == 'POST':
             return delete(request.form)
-        return render_template('marcadores.html', t=boletos.values())
+        return render_template('marcadores.html', t=boletos)
     else:
         return redirect(url_for('home'))
     

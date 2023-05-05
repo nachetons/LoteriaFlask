@@ -10,7 +10,9 @@
     <br>
     <br>
 
-    <form method="POST" action="{{ url_for('add') }}">
+    <form class="form_add" method="POST" action="{{ url_for('add') }}">
+        
+        <div class="form_atr itemLotery">
         <label>Loteria</label>
         <select name="loteria">
             <option value="euromillones">Euromillones</option>
@@ -18,12 +20,19 @@
             <option value="bonoloto">Bonoloto</option>
             <option value="quiniela">Quiniela</option>
         </select>
+    </div>
+    <div class="form_atr">
         <label>Fecha</label>
         <input type="date" name="fecha" id="fecha">
+    </div>
+    <div class="form_atr">
         <label>Apuesta</label>
         <input type="text" name="apuesta" id="apuesta">
+    </div>
+    <div class="form_atr">
         <label>Complementario</label>
         <input type="text" placeholder="01-11" name="complemento" id="complementario">
+    </div>
         <button type="submit">Enviar</button>
     </form>
     <br>

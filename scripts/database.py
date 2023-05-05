@@ -1,5 +1,6 @@
 from firebaseConf import *
  
+
 def addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteria):
     db.child("users").child(
         currentUser).child('boletos').child(fecha+'_'+apuesta+'_'+complemento+'_'+loteria).set(
@@ -9,6 +10,10 @@ def addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteri
         "extra": complemento,
         "premio": "premio",
         "estado": "pendiente"})
+    
+def getBoletos(currentUser):
+    boletos = db.child("users").child(currentUser).child('boletos').get().val().values()
+    return boletos
 
 def eliminarBoleto(currentUser,fecha_final,apuesta,complemento,loteria):
     db.child("users").child(currentUser).child('boletos').child(fecha_final+'_'+apuesta+'_'+complemento+'_'+loteria).remove()

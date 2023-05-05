@@ -96,6 +96,8 @@ def readImages(image, currentUser):
      text = pytesseract.image_to_string(roi, lang='spa')
 
      pytesseractText.append(text)
+    print(pytesseractText[0],pytesseractText[1],pytesseractText[2])
+
     if validar(pytesseractText):
         parserText(pytesseractText, currentUser)
     else:

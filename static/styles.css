@@ -190,6 +190,27 @@ ul.dropdown-menu.menu_profile.show{
 
   
 }
+.form_add{
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+}
+.form_atr{
+  display: flex;
+  flex-direction: column;
+}
+.form_atr input{
+  margin-bottom: 5%;
+  border: solid 1px black;
+  border-radius: 2%;
+  margin: 3%;
+}
+button{
+  grid-column: 1/5;
+  justify-self: center;
+}
+
 
 
 
@@ -211,12 +232,7 @@ ul.dropdown-menu.menu_profile.show{
     grid-template-columns: repeat(1,1fr);
   }
 /*change view menu_image to mobile size*/
-.menu_profile{
-  
 
-
-
-}
 
 
 }
