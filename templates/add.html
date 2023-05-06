@@ -9,12 +9,26 @@
     {% include '/components/nav.html' %}
     <br>
     <br>
+    <div class="messages">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+            </div>
+            <br>
+
+    </div>
 
     <form class="form_add" method="POST" action="{{ url_for('add') }}">
         
         <div class="form_atr itemLotery">
         <label>Loteria</label>
-        <select name="loteria">
+        <select name="loteria" required>
             <option value="euromillones">Euromillones</option>
             <option value="primitiva">Primitiva</option>
             <option value="bonoloto">Bonoloto</option>
@@ -23,15 +37,15 @@
     </div>
     <div class="form_atr">
         <label>Fecha</label>
-        <input type="date" name="fecha" id="fecha">
+        <input type="date" name="fecha" id="fecha" required>
     </div>
     <div class="form_atr">
         <label>Apuesta</label>
-        <input type="text" name="apuesta" id="apuesta">
+        <input type="text" name="apuesta" id="apuesta" required>
     </div>
     <div class="form_atr">
         <label>Complementario</label>
-        <input type="text" placeholder="01-11" name="complemento" id="complementario">
+        <input type="text" placeholder="01-11" name="complemento" id="complementario" required>
     </div>
         <button type="submit">Enviar</button>
     </form>
@@ -41,7 +55,7 @@
     <h2>AÑADIR BOLETO ATRAVES DE IMAGEN</h2>
     <form method="POST" enctype='multipart/form-data' action="{{ url_for('add') }}">
         <!--input file image and any accept format png jpeg jpg-->
-        <input type="file" name="image" accept="image/*">
+        <input type="file" name="image" accept="image/*" required>
         <button type="submit">Enviar</button>
     </form>
     

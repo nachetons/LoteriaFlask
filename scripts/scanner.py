@@ -3,6 +3,8 @@ import numpy as np
 import pytesseract
 import imutils
 import re
+from flask import (
+    flash)
 
 from datetime import datetime
 import scripts.database as database
@@ -103,6 +105,8 @@ def readImages(image, currentUser):
     else:
         pytesseractText.clear()
         print("Los datos recibidos no cumplen con el formato esperado.")
+        flash("Error al analizar la imagen intentelo de nuevo o inserte los datos de forma manual", "danger")
+
 	    
 	    
 	    
@@ -130,34 +134,27 @@ def parserText(pytesseractText, currentUser):
     'NOV': '11',
     'DIC': '12',
 }
-	numero_regex = r'^\s*\d{2}\s+\d{2}\s+\d{2}\s+\d{2}\s+\d{2}\s+\+\s+\d{2}\s+\d{2}\s*$'
-	fecha_regex = r'^\d{1,2}\s\w{3}\s\d{2}$'
-	fechass = pytesseractText[1].replace('\n','')
+	
 
 
 
 	print(pytesseractText[0],pytesseractText[1],pytesseractText[2])
-
-	if re.match(numero_regex, pytesseractText[0]) and re.match(fecha_regex, fechass):
-		fecha = pytesseractText[1].replace('\n','')
-		dia, mes_abr, anio = fecha.split(' ')
-		mes = meses[mes_abr]
-		fecha_datetime = datetime.strptime(f'{dia} {mes} {anio}', '%d %m %y')
-		fecha_nueva = fecha_datetime.strftime('%Y-%m-%d')
-		fechaFormateada = fecha_datetime.strftime('%d/%m/%Y')	
-	
-		numeroComplemento = pytesseractText[0].replace('\n','')
-		numeroSorteo, complemento = numeroComplemento.split('+')
-		numeroSorteo = numeroSorteo.replace(' ','')
-		complemento = complemento.replace(' ','-')
-		complemento = complemento[1:]  
-
-		sorteo = pytesseractText[2].replace('\n','').lower()
-		pytesseractText.clear()
-
-		content = fecha_nueva+'_'+numeroSorteo+'_'+complemento+'_'+sorteo
-		print('Texto: ',content)
-		database.addBoleto(
+	fecha = pytesseractText[1].replace('\n','')
+	dia, mes_abr, anio = fecha.split(' ')
+	mes = meses[mes_abr]
+	fecha_datetime = datetime.strptime(f'{dia} {mes} {anio}', '%d %m %y')
+	fecha_nueva = fecha_datetime.strftime('%Y-%m-%d')
+	fechaFormateada = fecha_datetime.strftime('%d/%m/%Y')
+	numeroComplemento = pytesseractText[0].replace('\n','')
+	numeroSorteo, complemento = numeroComplemento.split('+')
+	numeroSorteo = numeroSorteo.replace(' ','')
+	complemento = complemento.replace(' ','-')
+	complemento = complemento[1:]
+	sorteo = pytesseractText[2].replace('\n','').lower()
+	pytesseractText.clear()
+	content = fecha_nueva+'_'+numeroSorteo+'_'+complemento+'_'+sorteo
+	print('Texto: ',content)
+	database.addBoleto(
 			currentUser,
 			fecha_nueva,
 			fechaFormateada,
@@ -166,9 +163,10 @@ def parserText(pytesseractText, currentUser):
 			sorteo,
 
 	)
-		print('Boleto añadido correctamente')
-	else:
-		print('Los datos recibidos no cumplen con el formato esperado.')
+	print('Boleto añadido correctamente')
+	flash("Boleto añadido correctamente", "success")
+		
+
 
 
 def validar(texto):

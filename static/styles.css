@@ -210,6 +210,11 @@ button{
   grid-column: 1/5;
   justify-self: center;
 }
+.messages{
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
+}
 
 
 
