@@ -1,5 +1,6 @@
 from firebaseConf import *
- 
+import datetime
+
 
 def addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteria):
     db.child("users").child(
@@ -11,9 +12,36 @@ def addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteri
         "premio": "premio",
         "estado": "pendiente"})
     
+    
+
 def getBoletos(currentUser):
-    boletos = db.child("users").child(currentUser).child('boletos').get().val().values()
+    ref = db.child("users").child(currentUser).child('boletos')
+    if ref.get().val() is not None:
+        boletos = db.child("users").child(currentUser).child('boletos').get().val().values()
+    else:
+        db.child("users").child(currentUser).child('boletos').set({})
+        boletos = {}
     return boletos
+
+
+
+#function to getAllBalance
+def getAllBalance(currentUser):
+    balance_dia = db.child("users").child(currentUser).child("balance_dia").get().val()
+    balance_mes = db.child("users").child(currentUser).child("balance_mes").get().val()
+    balance_anual = db.child("users").child(currentUser).child("balance_anual").get().val()
+    balance_cuenta = db.child("users").child(currentUser).child("balance_cuenta").get().val()
+    if balance_dia is None:
+        balance_dia = {}
+    if balance_mes is None:
+        balance_mes = {}
+    if balance_anual is None:
+        balance_anual = {}
+    if balance_cuenta is None:
+        balance_cuenta = 0
+    
+    print(balance_dia, balance_mes, balance_anual, balance_cuenta)
+    return balance_dia, balance_mes, balance_anual, balance_cuenta
 
 def eliminarBoleto(currentUser,fecha_final,apuesta,complemento,loteria):
     db.child("users").child(currentUser).child('boletos').child(fecha_final+'_'+apuesta+'_'+complemento+'_'+loteria).remove()

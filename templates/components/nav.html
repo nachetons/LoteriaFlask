@@ -10,9 +10,11 @@
           <li class="nav-item">
             <a class="nav-link mx-2 active" aria-current="page" href="/">Home</a>
           </li>
+          {% if g.user_authenticated %}
           <li class="nav-item">
             <a class="nav-link mx-2" href="../results">Results</a>
           </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link mx-2" href="../about">About</a>
           </li>

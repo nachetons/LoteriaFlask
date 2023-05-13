@@ -3,6 +3,8 @@ import numpy as np
 import pytesseract
 import imutils
 import re
+from pyzbar.pyzbar import decode
+
 from flask import (
     flash)
 
@@ -85,6 +87,13 @@ def readImages(image, currentUser):
     ((500, 930), (900, 990)),
     ((430, 215), (1000, 290))
 ]
+    texto_qr = leer_qr(image)
+    print(texto_qr)
+	     
+	
+    
+    
+
     for coord in coordenadas:
      (x1, y1), (x2, y2) = coord
      w, h = x2 - x1, y2 - y1
@@ -183,3 +192,18 @@ def validar(texto):
 
 #align_images(image, template, debug=True)
 	
+def leer_qr(imagen):
+    """
+    Lee el código QR de una imagen y devuelve el texto contenido en él.
+    """
+    # Carga la imagen en escala de grises
+    imagen_gris = cv2.cvtColor(imagen, cv2.COLOR_BGR2GRAY)
+
+    # Decodifica el código QR
+    qr_codes = decode(imagen_gris)
+
+    # Devuelve el texto del código QR
+    if qr_codes:
+        return qr_codes[0].data.decode('utf-8')
+    else:
+        return None

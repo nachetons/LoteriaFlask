@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   {% include '/components/links.html' %}
 
 </head>
+
 <body>
   {% include '/components/nav.html' %}
-  <table  id="tabla-marcadores"  class="table table-dark">
+  <table id="tabla-marcadores" class="table table-dark">
     <thead>
       <tr class="table-dark">
         <th scope="col">Name</th>
@@ -24,19 +26,32 @@
     </thead>
     <tbody>
       {% for l in t %}
+
+      {% set estado_class = '' %}
+
+      {% if l.estado == 'acertado' %}
+      {% set estado_class = 'text-success' %}
+      {% elif l.estado == 'no acertado' %}
+      {% set estado_class = 'text-danger' %}
+      {% else %}
+      {% set estado_class = 'text-warning' %}
+      {% endif %}
+
+
       <tr class="table-dark boleto boleto-{{ l.sorteo }}-{{ l.fecha }}-{{ l.numero }}">
         <form method="POST" action="{{ url_for('marcadores') }}">
-        <td class="table-dark sorteo" data-value="{{ l.sorteo }}">{{ l.sorteo }}</td>
-        <td class="table-dark numero" data-value="{{ l.numero }}">{{ l.numero }}</td>
-        <td class="table-dark extra" data-value="{{ l.extra }}">{{ l.extra }}</td>
-        <td class="table-dark fecha" data-value="{{ l.fecha }}">{{ l.fecha }}</td>
-        <td class="table-dark premio" data-value="{{ l.premio }}">{{ l.premio }}</td>
-        <td class="table-dark estado" data-value="{{ l.estado }}">{{ l.estado }}</td>
-          <td class="table-dark"><button type="submit" name="data" value="{{ l.sorteo, l.fecha, l.numero, l.extra }}">Borrar</button></td>
+          <td class="table-dark sorteo {{ estado_class }}" data-value="{{ l.sorteo }}">{{ l.sorteo }}</td>
+          <td class="table-dark numero {{ estado_class }}" data-value="{{ l.numero }}">{{ l.numero }}</td>
+          <td class="table-dark extra {{ estado_class }}" data-value="{{ l.extra }}">{{ l.extra }}</td>
+          <td class="table-dark fecha {{ estado_class }}" data-value="{{ l.fecha }}">{{ l.fecha }}</td>
+          <td class="table-dark premio {{ estado_class }}" data-value="{{ l.premio }}">{{ l.premio }}</td>
+          <td class="table-dark estado {{ estado_class }}" data-value="{{ l.estado }}">{{ l.estado }}</td>
+          <td class="table-dark"><button type="submit" name="data"
+              value="{{ l.sorteo, l.fecha, l.numero, l.extra }}">Borrar</button></td>
         </form>
       </tr>
       {% endfor %}
-      
+
     </tbody>
   </table>
   <button>
@@ -48,8 +63,9 @@
   </button>
 
 
-  
+
   {% include '/components/footer.html' %}
-  
+
 </body>
+
 </html>

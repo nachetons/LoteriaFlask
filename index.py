@@ -55,7 +55,8 @@ def load_user(user_id):
 def home():
     nombresLoteria=["Euromillones", "Bonoloto", "Primitiva","elGordo"]
     if current_user.is_authenticated:
-        profile_pic = current_user.profile_pic        
+        profile_pic = current_user.profile_pic
+        
 
         return render_template('home.html', name="logeado" ,profile_pic=profile_pic, resultsEuro=lastResults(), nombresLoterias=nombresLoteria, id=g.user_ref.uid)
     else:
@@ -197,7 +198,73 @@ def delete(info):
 
 @app.route('/results', methods=['GET', 'POST'])
 def results():
-    return render_template('results.html')
+    if current_user.is_authenticated:
+
+        getAllBalance(g.user_ref.uid)
+        dias = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+        meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        años = ['2016', '2017', '2018', '2019', '2020', '2021','2022', '2023'];
+
+        duracion=[]
+
+        if request.method == 'POST':
+            seleccion = request.json['seleccion']
+            if seleccion == 'Semana':
+                print("semana")
+                for i in range(7):
+                    duracion.append(dias[i])
+            elif seleccion == 'Mes':
+                print("mes")
+                for i in range(12):
+                    duracion.append(meses[i])
+            elif seleccion == 'Año':
+                print("año")
+                for i in range(8):
+                    duracion.append(años[i])
+
+            graph_data = graph(duracion)
+            return jsonify(graph_data)
+        else:
+            return render_template('results.html')
+        
+    else:
+        return redirect(url_for('home'))
+
+def graph(duration):
+    x = duration
+    y = [50, 200, 100, 230, 900, 0, 500,900, 200, 500, 0, 900, 0, 500]
+    trace = {
+        'x': x,
+        'y': y,
+        'mode': 'lines+markers',
+        'line': {
+            'color': 'rgb(0, 123, 255)',
+            'width': 4,
+            'shape': 'spline'
+        }
+    }
+    data = [trace]
+    layout = {
+        'xaxis': {
+            'tickmode': 'linear',
+            'tick0': 0,
+            'dtick': 1,
+            'tickvals': list(range(len(x))), # Ajusta el número de ticks en el eje x
+            'ticktext': x
+        },
+        'yaxis': {
+            'range': [0, 1000],
+            'tickmode': 'linear',
+            'tick0': 0,
+            'dtick': 200
+        }
+    }
+    return {'data': data, 'layout': layout}
+
+
+
+    
+
 
 
 @app.route('/settings', methods=['GET', 'POST'])

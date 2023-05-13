@@ -2,82 +2,60 @@
 <html lang="en">
 
 <head>
-    {% include '/components/links.html' %}
+  {% include '/components/links.html' %}
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 </head>
 
 <body>
-    {% include '/components/nav.html' %}
-    <h1>ESTAS EN RESULTS</h1>
-    <div class="container">
-        <div class="row my-3">
-            <div class="col">
-                <h4>Estadistica de apuestas</h4>
-                <select>
-                    <option value="1">Semana</option>
-                    <option value="2">Mes</option>
-                    <option value="3">Año</option>
-                </select>
+  {% include '/components/nav.html' %}
+  <h1>ESTAS EN RESULTS</h1>
+  <div class="container">
+    <div class="row my-3">
+      <div class="col">
+        <h4>Estadistica de apuestas</h4>
+        <select id="selectElement" onchange="enviarSeleccion()">
+          <option value="Semana">Semana</option>
+          <option value="Mes">Mes</option>
+          <option value="Año">Año</option>
+        </select>
 
-                <select>
-                    <option value="1">Apuestas</option>
-                    <option value="2">Ganancias</option>
-                    <option value="3">Perdidas</option>
-                </select>
-            </div>
-        </div>
-        <div class="row my-2">
-            <div class="col-md-8 py-1">
-                <div class="card">
-                    <div class="card-body">
-                        <canvas id="chLine"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <select>
+          <option value="1">Apuestas</option>
+          <option value="2">Ganancias</option>
+          <option value="3">Perdidas</option>
+        </select>
+      </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
-        {% include '/components/footer.html' %}
+  <h1>Resultados</h1>
+  
+  <div id="graph"></div>
+  {% include '/components/footer.html' %}
 
-<script>
-var colors = ['#007bff','#28a745','#333333','#c3e6cb','#dc3545','#6c757d'];
-var chLine = document.getElementById("chLine");
-var chartData = {
-  labels: ["L", "M", "X", "J", "V", "S", "D"],
-  datasets: [{
-    data: [900, 200, 500, 0, 900, 0, 500],
-    backgroundColor: 'transparent',
-    borderColor: colors[0],
-    borderWidth: 4,
-    pointBackgroundColor: colors[0]
-  }
-//   {
-//     data: [639, 465, 493, 478, 589, 632, 674],
-//     backgroundColor: colors[3],
-//     borderColor: colors[1],
-//     borderWidth: 4,
-//     pointBackgroundColor: colors[1]
-//   }
-  ]
-};
-if (chLine) {
-  new Chart(chLine, {
-    type: 'line',
-    data: chartData,
-    options: {
-      scales: {
-        xAxes: [{
-          ticks: {
-            beginAtZero: false
-          }
-        }]
-      },
-      legend: {
-        display: false
-      }
+
+
+  
+  <script>
+    function enviarSeleccion() {
+      var selectElement = document.getElementById("selectElement");
+      var seleccion = selectElement.options[selectElement.selectedIndex].value;
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "/results");
+      xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          console.log(seleccion);
+          var graph_data = JSON.parse(xhr.responseText);
+          // Generar la gráfica utilizando los datos obtenidos
+          Plotly.newPlot('graph', graph_data.data, graph_data.layout);
+        }
+      };
+      xhr.send(JSON.stringify({ seleccion: seleccion }));
     }
-  });
-}
-</script>
+  
+    // Inicialmente, cargar los datos por defecto (Año)
+    enviarSeleccion();
+  </script>
 </body>
 
 </html>

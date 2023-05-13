@@ -1,7 +1,7 @@
 .fotoAbout{
-  width: 15%;
-  height: 15%;
-  border-radius: 50%;
+  width: 10%;
+  height: 10%;
+  border-radius: 100%;
 
 }
 .containerFoto{
@@ -10,8 +10,13 @@
   align-items: center;
 }
 
-.container{
+.navbar{
+  font-family: fantasy
+}
+
+footer .container{
   margin: 5%;
+  
 }
 
 
@@ -28,21 +33,22 @@ body {
   }
 
 footer{
-  position: relative;
-  left: 0;
+  position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
-  background-color: red;
-  color: white;
-  text-align: center;
+  height: 10%;
+  background-color: #333;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 20px;
+
 }
 
 
-.card{
-  transform: translate(20%,20%);
-
-
-}
 
 .profilephoto{
   width: 50px;
@@ -54,8 +60,17 @@ footer{
 
 .card{
 
-  border-top: 4px solid #F8BBD0;
-  background-color: #BA68C8;
+  border-top: 4px solid #ababab;
+  background-color: #aaaaaa;
+  border-radius: 10px;
+  margin: 5%;
+  padding: 5%;
+  color: white;
+  box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.75);
+  transition: transform .2s;
+  cursor: pointer;
+  
+
 
 }
 
@@ -63,7 +78,7 @@ footer{
 .dot {
   height: 50px;
   width: 50px;
-  background-color: #ad63b9;
+  background-color: #989898;
   border-radius: 50%;
   display: inline-block;
 
@@ -73,8 +88,8 @@ footer{
 
   list-style: none;
   display: inline-flex;
-      right: 16px;
-    position: relative;
+  right: 16px;
+  position: relative;
 }
 
 .social-icons li{
@@ -84,17 +99,16 @@ footer{
 
 .social-icons li i{
   line-height: 50px;
-    
-    position: relative;
-    font-size: 20px;
-    color: #fff;
+  position: relative;
+  font-size: 20px;
+  color: #fff;
 }
 
 
 
 .form-text-color{
 
-  color: #df9de8!important;
+  color: #9dcbe8!important;
 
   
 }
@@ -141,9 +155,8 @@ footer{
 
 .btn:hover{
 
-  background: linear-gradient(to right, #5FC3E4 0%, #E55D87 100%);
+  background: linear-gradient(to right, #161616 0%, #6488a1 100%);
  
-  
 }
 
 
@@ -230,6 +243,18 @@ button{
 }
 .b3 {
   background: radial-gradient(circle at 65% 15%, white 1px, rgb(255, 231, 152) 3%, rgb(255, 98, 0) 60%, rgb(255, 233, 160) 100%);  
+}
+
+.text-success {
+  color: green;
+}
+
+.text-danger {
+  color: red;
+}
+
+.text-warning {
+  color: orange;
 }
 @media (max-width: 990px) {
   .content_balls{
