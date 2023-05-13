@@ -28,7 +28,9 @@
       </div>
     </div>
   <h1>Resultados</h1>
-  
+  <div id="loader" style="display: none;">
+    <i class="fa fa-spinner fa-spin"></i> Cargando...
+  </div>
   <div id="graph"></div>
   {% include '/components/footer.html' %}
 
@@ -37,12 +39,19 @@
   
   <script>
     function enviarSeleccion() {
+      var loader = document.getElementById("loader");
+      var graphs = document.getElementById("graph");
+      graphs.style.display = "none";
+
+      loader.style.display = "block";
       var selectElement = document.getElementById("selectElement");
       var seleccion = selectElement.options[selectElement.selectedIndex].value;
       var xhr = new XMLHttpRequest();
       xhr.open("POST", "/results");
       xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
       xhr.onload = function () {
+        graphs.style.display = "block";
+        loader.style.display = "none";
         if (xhr.status === 200) {
           console.log(seleccion);
           var graph_data = JSON.parse(xhr.responseText);

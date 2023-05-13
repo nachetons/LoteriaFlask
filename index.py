@@ -180,16 +180,16 @@ def marcadores():
     if current_user.is_authenticated:
         boletos = database.getBoletos(g.user_ref.uid)
         if request.method == 'POST':
+            flash("Boleto eliminado correctamente", "success")
             return delete(request.form)
+        
         return render_template('marcadores.html', t=boletos)
     else:
         return redirect(url_for('home'))
     
 def delete(info):
     if request.method == 'POST':
-        print("Estas en delete")
         procesar_datos_formulario2(info['data'], g.user_ref.uid)
-
         return redirect(url_for('marcadores'))
     else:
         return redirect(url_for('marcadores'))

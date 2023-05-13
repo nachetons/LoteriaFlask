@@ -1,6 +1,7 @@
 from datetime import datetime
 import scripts.database as database
-
+from flask import (
+    flash)
 
 
 def procesar_datos_formulario(datos_formulario, currentUser):
@@ -14,7 +15,8 @@ def procesar_datos_formulario(datos_formulario, currentUser):
     fecha_datetime = datetime.strptime(fecha2, "%Y/%m/%d")
     fecha_formateada = fecha_datetime.strftime("%d/%m/%Y")
     database.addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteria)
-    
+    flash("Boleto añadido correctamente", "success")
+
     print(loteria, fecha, apuesta, complemento)
 
 

@@ -10,9 +10,31 @@
 
 <body>
   {% include '/components/nav.html' %}
-  <table id="tabla-marcadores" class="table table-dark">
+
+  <div class="refresh-container">
+    <button class="refreshButton">
+      <a href="{{ url_for('marcadores') }}"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+    </button>
+  </div>
+
+  <div class="messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }}">
+        {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        </div>
+        <br>
+
+</div>
+
+  <table id="tabla-marcadores" class="table">
     <thead>
-      <tr class="table-dark">
+      <tr class="encabezado">
         <th scope="col">Name</th>
         <th scope="col">Number</th>
         <th scope="col">Adds</th>
@@ -25,6 +47,7 @@
       </tr>
     </thead>
     <tbody>
+      
       {% for l in t %}
 
       {% set estado_class = '' %}
@@ -38,15 +61,15 @@
       {% endif %}
 
 
-      <tr class="table-dark boleto boleto-{{ l.sorteo }}-{{ l.fecha }}-{{ l.numero }}">
+      <tr class="datosTabla boleto boleto-{{ l.sorteo }}-{{ l.fecha }}-{{ l.numero }}">
         <form method="POST" action="{{ url_for('marcadores') }}">
-          <td class="table-dark sorteo {{ estado_class }}" data-value="{{ l.sorteo }}">{{ l.sorteo }}</td>
-          <td class="table-dark numero {{ estado_class }}" data-value="{{ l.numero }}">{{ l.numero }}</td>
-          <td class="table-dark extra {{ estado_class }}" data-value="{{ l.extra }}">{{ l.extra }}</td>
-          <td class="table-dark fecha {{ estado_class }}" data-value="{{ l.fecha }}">{{ l.fecha }}</td>
-          <td class="table-dark premio {{ estado_class }}" data-value="{{ l.premio }}">{{ l.premio }}</td>
-          <td class="table-dark estado {{ estado_class }}" data-value="{{ l.estado }}">{{ l.estado }}</td>
-          <td class="table-dark"><button type="submit" name="data"
+          <td class="sorteo {{ estado_class }}" data-value="{{ l.sorteo }}">{{ l.sorteo }}</td>
+          <td class="numero {{ estado_class }}" data-value="{{ l.numero }}">{{ l.numero }}</td>
+          <td class="extra {{ estado_class }}" data-value="{{ l.extra }}">{{ l.extra }}</td>
+          <td class="fecha {{ estado_class }}" data-value="{{ l.fecha }}">{{ l.fecha }}</td>
+          <td class="premio {{ estado_class }}" data-value="{{ l.premio }}">{{ l.premio }}</td>
+          <td class="estado {{ estado_class }}" data-value="{{ l.estado }}">{{ l.estado }}</td>
+          <td class=""><button type="submit" name="data"
               value="{{ l.sorteo, l.fecha, l.numero, l.extra }}">Borrar</button></td>
         </form>
       </tr>
@@ -54,13 +77,7 @@
 
     </tbody>
   </table>
-  <button>
-    <!--button refresh data-->
-    <a href="{{ url_for('marcadores') }}">Refrescar</a>
 
-
-
-  </button>
 
 
 
