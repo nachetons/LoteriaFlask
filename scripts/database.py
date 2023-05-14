@@ -1,5 +1,4 @@
 from firebaseConf import *
-import datetime
 
 
 def addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteria):

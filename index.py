@@ -199,93 +199,17 @@ def delete(info):
 @app.route('/results', methods=['GET', 'POST'])
 def results():
     if current_user.is_authenticated:
-
-        dias = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-        meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-        años = ['2016', '2017', '2018', '2019', '2020', '2021','2022', '2023'];
-
-        duracion=[]
-        balance=[]
-        fechas=[]
-
-        duracion.clear
-        balance.clear
-        fechas.clear
-
         if request.method == 'POST':
             seleccion = request.json['seleccion']
-            if seleccion == 'Semana':
-                print("semana")
-                resultados = getAllBalance(g.user_ref.uid, seleccion)
-                balance.append(resultados.values())
-                fechas.append(resultados.keys())
-                for i in range(7):
-                    duracion.append(dias[i])
-            elif seleccion == 'Mes':
-                print("mes")
-                resultados = getAllBalance(g.user_ref.uid, seleccion)
-                balance.append(resultados.values())
-                fechas.append(resultados.keys())
-                for i in range(12):
-                    duracion.append(meses[i])
-            elif seleccion == 'Año':
-                resultados = getAllBalance(g.user_ref.uid, seleccion)
-                balance.append(resultados.values())
-                fechas.append(resultados.keys())
-                print("año")
-                for i in range(8):
-                    duracion.append(años[i])
-            graph_data = graph(duracion, balance, fechas)
+            duracion, balance, fechas, date = procesar_datos_grafico(seleccion, g.user_ref.uid)
+
+            graph_data = graph(duracion, balance, fechas, date)
             return jsonify(graph_data)
         else:
             return render_template('results.html')
         
     else:
         return redirect(url_for('home'))
-
-def graph(duration, balance, fechas):
-#    y = [50, 200, 100, 230, 900, 0, 500,900, 200, 500, 0, 900, 0, 500]
-    fechas = list(fechas[0])
-    balance = list(balance[0])
-   
-    
-    
-    print(balance)
-    print(fechas)
-   
-    x = duration
-    y = balance
-    trace = {
-        'x': x,
-        'y': y,
-        'mode': 'lines+markers',
-        'line': {
-            'color': 'rgb(0, 123, 255)',
-            'width': 4,
-            'shape': 'spline'
-        }
-    }
-    data = [trace]
-    layout = {
-        'xaxis': {
-            'tickmode': 'linear',
-            'tick0': 0,
-            'dtick': 1,
-            'tickvals': list(range(len(x))), # Ajusta el número de ticks en el eje x
-            'ticktext': x
-        },
-        'yaxis': {
-            'range': [0, 1000],
-            'tickmode': 'linear',
-            'tick0': 0,
-            'dtick': 200
-        }
-    }
-    return {'data': data, 'layout': layout}
-
-
-
-    
 
 
 
