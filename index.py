@@ -200,29 +200,42 @@ def delete(info):
 def results():
     if current_user.is_authenticated:
 
-        getAllBalance(g.user_ref.uid)
         dias = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
         meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
         años = ['2016', '2017', '2018', '2019', '2020', '2021','2022', '2023'];
 
         duracion=[]
+        balance=[]
+        fechas=[]
+
+        duracion.clear
+        balance.clear
+        fechas.clear
 
         if request.method == 'POST':
             seleccion = request.json['seleccion']
             if seleccion == 'Semana':
                 print("semana")
+                resultados = getAllBalance(g.user_ref.uid, seleccion)
+                balance.append(resultados.values())
+                fechas.append(resultados.keys())
                 for i in range(7):
                     duracion.append(dias[i])
             elif seleccion == 'Mes':
                 print("mes")
+                resultados = getAllBalance(g.user_ref.uid, seleccion)
+                balance.append(resultados.values())
+                fechas.append(resultados.keys())
                 for i in range(12):
                     duracion.append(meses[i])
             elif seleccion == 'Año':
+                resultados = getAllBalance(g.user_ref.uid, seleccion)
+                balance.append(resultados.values())
+                fechas.append(resultados.keys())
                 print("año")
                 for i in range(8):
                     duracion.append(años[i])
-
-            graph_data = graph(duracion)
+            graph_data = graph(duracion, balance, fechas)
             return jsonify(graph_data)
         else:
             return render_template('results.html')
@@ -230,9 +243,18 @@ def results():
     else:
         return redirect(url_for('home'))
 
-def graph(duration):
+def graph(duration, balance, fechas):
+#    y = [50, 200, 100, 230, 900, 0, 500,900, 200, 500, 0, 900, 0, 500]
+    fechas = list(fechas[0])
+    balance = list(balance[0])
+   
+    
+    
+    print(balance)
+    print(fechas)
+   
     x = duration
-    y = [50, 200, 100, 230, 900, 0, 500,900, 200, 500, 0, 900, 0, 500]
+    y = balance
     trace = {
         'x': x,
         'y': y,

@@ -26,7 +26,7 @@ def getBoletos(currentUser):
 
 
 #function to getAllBalance
-def getAllBalance(currentUser):
+def getAllBalance(currentUser, seleccion):
     balance_dia = db.child("users").child(currentUser).child("balance_dia").get().val()
     balance_mes = db.child("users").child(currentUser).child("balance_mes").get().val()
     balance_anual = db.child("users").child(currentUser).child("balance_anual").get().val()
@@ -40,8 +40,16 @@ def getAllBalance(currentUser):
     if balance_cuenta is None:
         balance_cuenta = 0
     
-    print(balance_dia, balance_mes, balance_anual, balance_cuenta)
-    return balance_dia, balance_mes, balance_anual, balance_cuenta
+
+    if seleccion == 'Semana':
+        return balance_dia
+    elif seleccion == 'Mes':
+        return balance_mes
+    elif seleccion == 'Año':
+        return balance_anual
+    elif seleccion == 'Cuenta':
+        return balance_cuenta
+
 
 def eliminarBoleto(currentUser,fecha_final,apuesta,complemento,loteria):
     db.child("users").child(currentUser).child('boletos').child(fecha_final+'_'+apuesta+'_'+complemento+'_'+loteria).remove()
