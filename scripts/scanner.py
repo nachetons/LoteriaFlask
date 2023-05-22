@@ -90,10 +90,6 @@ def readImages(image, currentUser):
     texto_qr = leer_qr(image)
     print(texto_qr)
 	     
-	
-    
-    
-
     for coord in coordenadas:
      (x1, y1), (x2, y2) = coord
      w, h = x2 - x1, y2 - y1
@@ -163,6 +159,7 @@ def parserText(pytesseractText, currentUser):
 	pytesseractText.clear()
 	content = fecha_nueva+'_'+numeroSorteo+'_'+complemento+'_'+sorteo
 	print('Texto: ',content)
+        
 	database.addBoleto(
 			currentUser,
 			fecha_nueva,
@@ -172,8 +169,7 @@ def parserText(pytesseractText, currentUser):
 			sorteo,
 
 	)
-	print('Boleto añadido correctamente')
-	flash("Boleto añadido correctamente", "success")
+	
 		
 
 
@@ -187,10 +183,6 @@ def validar(texto):
 		return True
 	else:
 		return False
-	
-	
-
-#align_images(image, template, debug=True)
 	
 def leer_qr(imagen):
     """

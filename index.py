@@ -1,3 +1,4 @@
+from flask import session
 from scripts.dependencies import *
 
 GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID', None)
@@ -5,9 +6,23 @@ GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET', None)
 GOOGLE_DISCOVERY_URL = (
     "https://accounts.google.com/.well-known/openid-configuration"
 )
+SERVER = os.environ.get('SERVER', None)
+PORT = os.environ.get('PORT', None)
+EMAIL = os.environ.get('EMAIL', None)
+PASSWORD = os.environ.get('PASSWORD', None)
+TLS = os.environ.get('TLS', None)
+SSL = os.environ.get('SSL', None)
+
+
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY") or os.urandom(24)
+app.config['MAIL_SERVER']= SERVER
+app.config['MAIL_PORT'] = PORT
+app.config['MAIL_USERNAME'] = EMAIL
+app.config['MAIL_PASSWORD'] = PASSWORD
+app.config['MAIL_USE_SSL'] = SSL
+mail = Mail(app)
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
@@ -100,40 +115,53 @@ def callback():
         redirect_url=request.base_url,
         code=code
     )
-    token_response = requests.post(
-        token_url,
-        headers=headers,
-        data=body,
-        auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
-    )
+    try:
+        token_response = requests.post(
+            token_url,
+            headers=headers,
+            data=body,
+            auth=(GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET),
+        )
+        token_response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        return f"HTTP error occurred: {err}", 500
+    except requests.exceptions.RequestException as err:
+        return f"An error occurred: {err}", 500
 
     client.parse_request_body_response(json.dumps(token_response.json()))
     userinfo_endpoint = google_provider_cfg["userinfo_endpoint"]
     uri, headers, body = client.add_token(userinfo_endpoint)
-    userinfo_response = requests.get(uri, headers=headers, data=body)
+    try:
+        userinfo_response = requests.get(uri, headers=headers, data=body)
+        userinfo_response.raise_for_status()
+    except requests.exceptions.HTTPError as err:
+        return f"HTTP error occurred: {err}", 500
+    except requests.exceptions.RequestException as err:
+        return f"An error occurred: {err}", 500
+
     user_info = userinfo_response.json()
-    
-    if user_info.get("email_verified"):
+
+    if "email_verified" in user_info and user_info["email_verified"]:
         unique_id = user_info['sub']
         users_email = user_info['email']
         picture = user_info['picture']
         users_name = user_info['given_name']
-        
-
     else:
         return "User email not available or not verified by Google.", 400
 
-    user = User(
-        id_=unique_id, name=users_name, email=users_email, profile_pic=picture
-    )
+    def create_or_get_user(unique_id, users_name, users_email, picture):
+        if not User.get(unique_id):
+            User.create(unique_id, users_name, users_email, picture)
+        return User(id_=unique_id, name=users_name, email=users_email, profile_pic=picture)
 
+    user = create_or_get_user(unique_id, users_name, users_email, picture)
 
-    if not User.get(unique_id):
-        User.create(unique_id, users_name, users_email, picture)
-
+    session['user_id'] = unique_id
+    session['user_name'] = users_name
+    session['user_email'] = users_email
+    session['user_picture'] = picture
     login_user(user)
-    
-       
+
     return redirect(url_for('home'))
 
 
@@ -144,7 +172,10 @@ def logout():
 
 @app.route('/about', methods=['GET', 'POST'])
 def about():
-    data = []
+    if request.method == 'POST':
+
+        procesar_datos_email(request.form, EMAIL, mail)
+
     return render_template('about.html')
 
 
@@ -180,7 +211,6 @@ def marcadores():
     if current_user.is_authenticated:
         boletos = database.getBoletos(g.user_ref.uid)
         if request.method == 'POST':
-            flash("Boleto eliminado correctamente", "success")
             return delete(request.form)
         
         return render_template('marcadores.html', t=boletos)
@@ -226,5 +256,4 @@ def profile():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
 

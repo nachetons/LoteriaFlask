@@ -1,6 +1,8 @@
 from datetime import datetime
 from scripts.database import *
 import scripts.database as database
+from flask_mail import Mail, Message
+
 from flask import (
     flash,
     jsonify)
@@ -17,7 +19,6 @@ def procesar_datos_formulario(datos_formulario, currentUser):
     fecha_datetime = datetime.strptime(fecha2, "%Y/%m/%d")
     fecha_formateada = fecha_datetime.strftime("%d/%m/%Y")
     database.addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteria)
-    flash("Boleto añadido correctamente", "success")
 
     print(loteria, fecha, apuesta, complemento)
 
@@ -37,6 +38,19 @@ def procesar_datos_formulario2(datos_formulario, currentUser):
     fecha_final = fecha_formateada.replace("/","-")
     database.eliminarBoleto(currentUser,fecha_final,apuesta,complemento,loteria)
 
+
+
+def procesar_datos_email(datos_formulario, personalMail, mail):
+    name = datos_formulario['name']
+    email = datos_formulario['email']
+    message = datos_formulario['message']
+
+    
+    print(email, personalMail)
+    msg = Message('Nuevo mensaje de la app Loteria', sender=email, recipients=[personalMail])
+    msg.body = "Nombre: {} Email: {} Mensaje: {}".format(name, email, message)
+    mail.send(msg)
+    return 'Mensaje enviado correctamente'
 
 
 def procesar_datos_grafico(seleccion, currentUser):
@@ -109,23 +123,35 @@ def graph(duration, balance, fechas, date):
    
     x = duration
     y = balance
-    trace = {
+    trace1 = {
         'x': fechas,
         'y': y,
         'mode': 'lines+markers',
+        'name': 'Trazado',
         'line': {
             'color': 'rgb(0, 123, 255)',
             'width': 4,
             'shape': 'spline'
         }
     }
-    data = [trace]
+    trace2 = {
+        'x': fechas,
+        'y': y,
+        'type': 'bar',
+        'name': 'Barras',
+        'marker': {
+            'color': 'rgb(255, 0, 0)',
+            'opacity': 0.7
+            }
+            
+    }
+    data = [trace1, trace2]
     layout = {
         'xaxis': {
             'tickmode': 'linear',
             'tick0': 0,
             'dtick': 1,
-            'tickvals': list(range(len(x))), # Ajusta el número de ticks en el eje x
+            'tickvals': list(range(len(x))),
             'ticktext': x
         },
         'yaxis': {
@@ -133,7 +159,8 @@ def graph(duration, balance, fechas, date):
             'tickmode': 'linear',
             'tick0': 0,
             'dtick': 400
-        }
+        },
+        'barmode': 'group'
     }
     return {'data': data, 'layout': layout}
 

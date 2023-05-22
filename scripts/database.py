@@ -1,15 +1,31 @@
 from firebaseConf import *
+import datetime as times
+from flask import (
+    flash)
 
 
 def addBoleto(currentUser, fecha, fecha_formateada, apuesta, complemento, loteria):
-    db.child("users").child(
-        currentUser).child('boletos').child(fecha+'_'+apuesta+'_'+complemento+'_'+loteria).set(
-        {"sorteo": loteria,
-        "fecha": fecha_formateada, 
-        "numero": apuesta, 
-        "extra": complemento,
-        "premio": "premio",
-        "estado": "pendiente"})
+    fecha_actual = times.datetime.now().date() 
+    fecha_boleto = times.datetime.strptime(fecha, "%Y-%m-%d").date() 
+
+    diff = fecha_actual - fecha_boleto
+
+  
+    if diff.days <= 90:
+        db.child("users").child(
+            currentUser).child('boletos').child(fecha+'_'+apuesta+'_'+complemento+'_'+loteria).set(
+            {
+            "sorteo": loteria,
+            "fecha": fecha_formateada, 
+            "numero": apuesta, 
+            "extra": complemento,
+            "premio": "premio",
+            "estado": "pendiente"
+            })
+        flash("Boleto añadido correctamente", "success")
+    else:
+        flash("La fecha del boleto es mayor a 3 meses", "danger")
+        return False
     
     
 
@@ -26,28 +42,19 @@ def getBoletos(currentUser):
 
 #function to getAllBalance
 def getAllBalance(currentUser, seleccion):
-    balance_dia = db.child("users").child(currentUser).child("balance_dia").get().val()
-    balance_mes = db.child("users").child(currentUser).child("balance_mes").get().val()
-    balance_anual = db.child("users").child(currentUser).child("balance_anual").get().val()
-    balance_cuenta = db.child("users").child(currentUser).child("balance_cuenta").get().val()
-    if balance_dia is None:
-        balance_dia = {}
-    if balance_mes is None:
-        balance_mes = {}
-    if balance_anual is None:
-        balance_anual = {}
-    if balance_cuenta is None:
-        balance_cuenta = 0
-    
+    balances = db.child("users").child(currentUser).get().val()
+    balance_dia = balances.get("balance_dia", {})
+    balance_mes = balances.get("balance_mes", {})
+    balance_anual = balances.get("balance_anual", {})
+    balance_cuenta = balances.get("balance_cuenta", 0)
 
-    if seleccion == 'Semana':
-        return balance_dia
-    elif seleccion == 'Mes':
-        return balance_mes
-    elif seleccion == 'Año':
-        return balance_anual
-    elif seleccion == 'Cuenta':
-        return balance_cuenta
+    balances_map = {
+        'Semana': balance_dia,
+        'Mes': balance_mes,
+        'Año': balance_anual,
+        'Cuenta': balance_cuenta
+    }
+    return balances_map.get(seleccion, {})
 
 
 def eliminarBoleto(currentUser,fecha_final,apuesta,complemento,loteria):
