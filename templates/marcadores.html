@@ -2,7 +2,7 @@
 <html>
 
 <head>
-
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/Marcadores.css') }}">
   {% include '/components/links.html' %}
 
 </head>
@@ -10,11 +10,12 @@
 <body>
   {% include '/components/nav.html' %}
 
-  <div class="refresh-container">
-    <button class="refreshButton">
-      <a href="{{ url_for('marcadores') }}"><i class="fa fa-refresh" aria-hidden="true"></i></a>
-    </button>
-  </div>
+  <div class="container">
+    <div class="refresh-container">
+      <button class="refreshButton">
+        <a href="{{ url_for('marcadores') }}"><i class="fa fa-refresh" aria-hidden="true"></i></a>
+      </button>
+    </div>
 
   <table id="tabla-marcadores">
     <thead>
@@ -44,34 +45,25 @@
       {% set estado_class = 'text-warning' %}
       {% endif %}
 
-      
-
-
-      <tr class="datosTabla boleto boleto-{{ l.sorteo }}-{{ l.fecha }}-{{ l.numero }}">
-        <form id="my-form" method="POST" action="{{ url_for('marcadores') }}">
-          <td class="sorteo {{ estado_class }}" data-value="{{ l.sorteo }}">{{ l.sorteo }}</td>
-          <td class="numero {{ estado_class }}" data-value="{{ l.numero }}">{{ l.numero }}</td>
-          <td class="extra {{ estado_class }}" data-value="{{ l.extra }}">{{ l.extra }}</td>
-          <td class="fecha {{ estado_class }}" data-value="{{ l.fecha }}">{{ l.fecha }}</td>
-          <td class="premio {{ estado_class }}" data-value="{{ l.premio }}">{{ l.premio }}</td>
-          <td class="estado {{ estado_class }}" data-value="{{ l.estado }}">{{ l.estado }}</td>
-          <td class=""><button type="button"  name="data"
-              value="{{ l.sorteo, l.fecha, l.numero, l.extra }}" onclick="showAlert('{{ l.sorteo }}', '{{ l.fecha }}', '{{ l.numero }}', '{{ l.extra }}')">Borrar</button></td>
-        </form>
-      </tr>
-
-
-      
-      {% endfor %}
-
-    </tbody>
-  </table>
-
-
-  
+        <tr class="datosTabla boleto boleto-{{ l.sorteo }}-{{ l.fecha }}-{{ l.numero }}">
+          <form id="my-form" method="POST" action="{{ url_for('marcadores') }}">
+            <td class="sorteo {{ estado_class }}" data-value="{{ l.sorteo }}">{{ l.sorteo }}</td>
+            <td class="numero {{ estado_class }}" data-value="{{ l.numero }}">{{ l.numero }}</td>
+            <td class="extra {{ estado_class }}" data-value="{{ l.extra }}">{{ l.extra }}</td>
+            <td class="fecha {{ estado_class }}" data-value="{{ l.fecha }}">{{ l.fecha }}</td>
+            <td class="premio {{ estado_class }}" data-value="{{ l.premio }}">{{ l.premio }}</td>
+            <td class="estado {{ estado_class }}" data-value="{{ l.estado }}">{{ l.estado }}</td>
+            <td><button type="button" name="data" value="{{ l.sorteo, l.fecha, l.numero, l.extra }}"
+                onclick="showAlert('{{ l.sorteo }}', '{{ l.fecha }}', '{{ l.numero }}', '{{ l.extra }}')">Borrar</button>
+            </td>
+          </form>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 
   {% include '/components/footer.html' %}
-
 
 </body>
 

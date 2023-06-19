@@ -2,38 +2,50 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style/Home.css') }}">
     {% include '/components/links.html' %}
 
 </head>
 
 <body>
     {% include '/components/nav.html' %}
-    <h1>Ultimos Resultados</h1>
-    <div class="content_balls">
-        {% for i in range(nombresLoterias | length) %}
-        <div class="euromillones_balls">
 
-
-            <h1 style="border: 2px solid black;">{{ nombresLoterias[i] }}</h1>
-            <div class="combo">
-                {% if resultsEuro[i] is not none %}
-                {% for number in resultsEuro[i] %}
-                <div class="ball b{{i}}">{{ number }}</div>
-                {% endfor %}
-                {% endif %}
-
+    <div class="container">
+        <h1>Últimos Resultados</h1>
+        <div class="content_balls">
+            {% for i in range(nombresLoterias | length) %}
+            <div class="euromillones_balls">
+                <h2>{{ nombresLoterias[i] }}</h2>
+                <div class="combo">
+                    {% if resultsEuro[i] is not none %}
+                    {% for number in resultsEuro[i] %}
+                    <div class="ball b{{i}}">{{ number }}</div>
+                    {% endfor %}
+                    {% endif %}
+                </div>
             </div>
-
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+
+        <div class="latest-results">
+            <ul>
+                {% for i in range(nombresLoterias | length) %}
+                <li>
+                    <span class="result-label">{{ nombresLoterias[i] }}:</span>
+                    <span class="result-value">
+                        {% if resultsEuro[i] is not none %}
+                        {% for number in resultsEuro[i] %}
+                        {{ number }}
+                        {% endfor %}
+                        {% endif %}
+                    </span>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
 
 
+</body>
+{% include '/components/footer.html' %}
 
-
-
-    {% include '/components/footer.html' %}
-    <!-- Botón de apertura del modal -->
-    <!-- jQuery Code (to Show Modal on Page Load) -->
-
-</html>
+  </html>
