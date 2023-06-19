@@ -2,3 +2,4 @@
 admin.json
 .flaskenv
 __pycache__/
+env/

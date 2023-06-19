@@ -236,6 +236,8 @@ button{
   border-collapse: collapse;
   border-radius: 10px;
   border-spacing: 0;
+  max-height: 300px;
+  overflow: auto;
   
 }
 
