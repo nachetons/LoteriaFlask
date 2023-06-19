@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style/AddBoleto.css') }}">
     {% include '/components/links.html' %}
 </head>
 
@@ -25,44 +24,49 @@
 
     </div>
 
-    <div class="container">
-        <form class="form-add" method="POST" action="{{ url_for('add') }}">
-          <div class="form-atr">
-            <label for="loteria">Loteria</label>
-            <select name="loteria" id="loteria" required>
-              <option value="euromillones">Euromillones</option>
-              <option value="primitiva">Primitiva</option>
-              <option value="bonoloto">Bonoloto</option>
-              <option value="quiniela">Quiniela</option>
-            </select>
-          </div>
-          <div class="form-atr">
-            <label for="fecha">Fecha</label>
-            <input type="date" name="fecha" id="fecha" required>
-          </div>
+    <form class="form_add" method="POST" action="{{ url_for('add') }}">
+        
+        <div class="form_atr itemLotery">
+        <label>Loteria</label>
+        <select name="loteria" required>
+            <option value="euromillones">Euromillones</option>
+            <option value="primitiva">Primitiva</option>
+            <option value="bonoloto">Bonoloto</option>
+            <option value="quiniela">Quiniela</option>
+        </select>
+    </div>
+    <div class="form_atr">
+        <label>Fecha</label>
+        <input type="date" name="fecha" id="fecha" required>
+    </div>
+    <div class="form_atr">
+        <label>Apuesta</label>
+        <input type="text" name="apuesta" id="apuesta" required>
+    </div>
+    <div class="form_atr">
+        <label>Complementario</label>
+        <input type="text" placeholder="01-11" name="complemento" id="complementario" required>
+    </div>
+        <button type="submit">Enviar</button>
+    </form>
+    <br>
+    <br>
+
+    <h2>AÑADIR BOLETO ATRAVES DE IMAGEN</h2>
+    <form method="POST" enctype='multipart/form-data' action="{{ url_for('add') }}">
+        <!--input file image and any accept format png jpeg jpg-->
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Enviar</button>
+    </form>
     
-          <div class="form-atr">
-            <label for="apuesta">Apuesta</label>
-            <input type="text" name="apuesta" id="apuesta" required>
-          </div>
     
-          <div class="form-atr">
-            <label for="complementario">Complementario</label>
-            <input type="text" placeholder="01-11" name="complemento" id="complementario" required>
-          </div>
+
     
-          <button class="btn_send" type="submit">Enviar</button>
-        </form>
+
+  
 
 
-        <h2>AÑADIR BOLETO ATRAVES DE IMAGEN</h2>
-        <form method="POST" enctype='multipart/form-data' action="{{ url_for('add') }}">
-          <input type="file" name="image" accept="image/*" required>
-          <button class="btn_send" type="submit">Enviar</button>
-        </form>
-      </div>
-    
-    
+
 
     {% include '/components/footer.html' %}
 
